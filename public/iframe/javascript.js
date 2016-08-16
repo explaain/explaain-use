@@ -28,6 +28,8 @@ $(window.parent).resize(function() {
 
 $("body").on("click touch", "a", function(e) {
   e.preventDefault();
+  /*
+  // Load card in iframe
   $.ajax({
     url: e.target.href
   })
@@ -36,6 +38,9 @@ $("body").on("click touch", "a", function(e) {
     $('.cards').append( getCardHtml(entity) );
     window.parent.explaain.resizeIframe($('html').attr('id'), $('body').outerHeight(), $('body').outerWidth());
   });
+  */
+  // Tell parent page to load card in overlay
+  window.parent.explaain.showOverlay(e.target.href);
   return false;
 });
 
