@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,900,300italic,400italic,900italic" rel="stylesheet" type="text/css">
+    <style>
+    body {
+      padding-bottom: 100px;
+    }
+    .header {
+      background-color: rgb(255, 110, 115);
+      margin-bottom: 20px;
+      color: #fff;
+      padding: 70px 0;
+    }
+    .header h1 {
+      font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 70px;
+      font-weight: 900;
+    }
+    .header p {
+      font-size: 40px;
+    }
+    h1,h2,h3,h4 {
+      font-weight: 900;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+       <div class="container">
+         <h1>Use explaain</h1>
+         <p class="lead">Add explaain cards to your website </p>
+       </div>
+    </div>
+    <div class="container">
+      <p class="lead">To use explaain cards on your website, just add this line of code.</p>
+
+      <pre>&lt;script src="https://use.explaain.com/explaain.js"&gt;&lt;/script&gt;</pre>
+      <p>
+        This script is cross browser, has no dependancies and is under the namespace "explaain" so it won't clash with JavaScript on your site.
+      </p>
+    
+      <hr/>
+    
+      <h2>How to use explaain</h2>
+    
+      <h3>1) Display related cards by keywords</h3>
+      <p class="lead">This example displays cards matching the keywords "Donald Trump".</p>
+      <h4>HTML</h4>
+      <pre>&lt;div class="explaain" data-keywords="Donald Trump"&gt;&lt;/div&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain" data-keywords="Donald Trump"></div>
+
+      <h3>2) Display a specific card by ID</h3>
+      <p class="lead">This example displays a specific card using it's ID.</p>
+      <h4>HTML</h4>
+      <pre>&lt;div class="explaain" data-id="https://explaain-api-develop.herokuapp.com/Organization/5787d1f6dac9821100609b1f"&gt;&lt;/div&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain" data-id="https://explaain-api-develop.herokuapp.com/Organization/5787d1f6dac9821100609b1f"></div>
+    
+      <!--
+      <h3>3) Link to cards in-line</h3>
+      <p class="lead">You can also wrap &lt;p&gt; tags in an explaain class and it will auto-detect cards in can link to.</p>
+      <h4>HTML</h4>
+      <pre>&lt;div class="explaain"&gt;
+  &lt;p&gt;
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa Donald Trump qui officia deserunt mollit anim id est laborum.
+  &lt;/p&gt;
+  &lt;p&gt;
+    Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+  &lt;/p&gt;
+&lt;/div&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa Donald Trump qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+          Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+        </p>
+      </div>
+      -->
+        
+      <script src="explaain.js"></script>
+    </div>
+  </body>
+</html>
