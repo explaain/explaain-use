@@ -1,0 +1,23 @@
+{
+  "name": "explaain-use",
+  "version": "1.0.0",
+  "description": "JavaScript to allow people to easily embed explaain cards on their website.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremynevans/explaain-use.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/jeremynevans/explaain-use/issues"
+  },
+  "homepage": "https://github.com/jeremynevans/explaain-use#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-partials": "^0.3.0"
+  }
+}
