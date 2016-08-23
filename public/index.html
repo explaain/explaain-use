@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,900,300italic,400italic,900italic" rel="stylesheet" type="text/css">
+    <style>
+    body {
+      padding-bottom: 100px;
+    }
+    .header {
+      background-color: rgb(255, 110, 115);
+      margin-bottom: 20px;
+      color: #fff;
+      padding: 70px 0;
+    }
+    .header h1 {
+      font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 70px;
+      font-weight: 900;
+    }
+    .header p {
+      font-size: 40px;
+    }
+    h1,h2,h3,h4 {
+      font-weight: 900;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+       <div class="container">
+         <h1>Use explaain</h1>
+         <p class="lead">Add explaain cards to your website </p>
+       </div>
+    </div>
+    <div class="container">
+      <p class="lead">To use explaain cards on your website, just add this line of code.</p>
+
+      <pre>&lt;script src="https://use.explaain.com/explaain.js"&gt;&lt;/script&gt;</pre>
+      <p>
+        This script is cross browser, has no dependancies and is under the namespace "explaain" so it won't clash with JavaScript on your site.
+      </p>
+    
+      <hr/>
+    
+      <h2>How to use explaain</h2>
+    
+      <h3>1) Display related cards by keywords</h3>
+      <p class="lead">This example displays cards matching the keywords "Theresa May".</p>
+      <h4>HTML</h4>
+      <pre>&lt;div class="explaain" data-keywords="Theresa May"&gt;&lt;/div&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain" data-keywords="Theresa May"></div>
+
+      <h3>2) Display a specific card by ID</h3>
+      <p class="lead">This example displays a specific card using it's ID.</p>
+      <h4>HTML</h4>
+      <pre>&lt;div class="explaain" data-id="http://api.explaain.com/Person/57b31ba4c38e87110021a439"&gt;&lt;/div&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain" data-id="http://api.explaain.com/Person/57b31ba4c38e87110021a439"></div>
+    
+      <h3>3) Link to cards in-line</h3>
+      <p class="lead">You can also also link to cards in text and it will detect the links.</p>
+      <h4>HTML</h4>
+      <pre>&lt;p&gt;
+  Excepteur sint occaecat cupidatat non proident, sunt in culpa
+  &lt;a href="http://api.explaain.com/Person/57b31ba4c38e87110021a439"&gt;Theresa May&lt;/a&gt;
+  qui officia deserunt mollit anim id est laborum.
+&lt;/p&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain">
+        <p>
+          Excepteur sint occaecat cupidatat non proident, sunt in culpa <a href="http://api.explaain.com/Person/57b31ba4c38e87110021a439">Theresa May</a> qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+      
+      <hr/>
+      <a href="http://explaain.com">explaain.com</a>
+      <script src="explaain.js"></script>
+    </div>
+  </body>
+</html>
