@@ -7,10 +7,10 @@
  */
 var explaain = new (function() {
 
-  // We are using a version variable for cache busting 
+  // We are using a version variable for cache busting
   // (as there is no build/deploy step yet)
   var version = "1.3.0";
-  
+
   var apiServer = "http://api.explaain.com";
 
   var baseUrl = "";
@@ -23,7 +23,7 @@ var explaain = new (function() {
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
   var overlayUrl = baseUrl+"iframe/overlay.html";
-  
+  overlayUrl = 'http://app.explaain.com/?embed=true&embedType=overlay'
   /**
    * Run on page load
    */
@@ -39,11 +39,11 @@ var explaain = new (function() {
         width: element.getAttribute("data-width") || "100%"
       }
       if (element.getAttribute("data-id")) {
-        insertIframe(element, element.getAttribute("data-id"), css);
+        insertIframe(element, 'card', element.getAttribute("data-id"), css);
       } else if (element.getAttribute("data-keywords")) {
         // @TODO Search cards other than Headline cards?
         // (Still need to add new API endpoint that searches across all cards)
-        insertIframe(element, apiServer+"/Headline/search/?q="+encodeURIComponent(element.getAttribute("data-keywords")), css);
+        insertIframe(element, 'search', apiServer+"/Headline/search/?q="+encodeURIComponent(element.getAttribute("data-keywords")), css);
       } else {
         // Assume <p> tags, insert links to cards
       }
@@ -77,7 +77,7 @@ var explaain = new (function() {
   } else if (document.attachEvent) {
       document.attachEvent('onclick', clickEvent);
   }
-  
+
   RegExp.escape = function(str) {
       return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
   };
@@ -95,11 +95,11 @@ var explaain = new (function() {
       }
     }
   }
-  
+
   /**
    * Insert iframe into target
    */
-  function insertIframe(target, url, css) {
+  function insertIframe(target, type, url, css) {
     var iframeId = getRandomInt(100000, 999999)
 
     var iframe = document.createElement('iframe');
@@ -109,27 +109,28 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
+    iframe.src = 'http://app.explaain.com/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
     }
     target.appendChild(iframe);
-    
-    ajax(url, function(err, response) {
-      if (err || !response || response.length == 0)
-        return;
 
-      var iframeContents = iframe.contentWindow.document;
-      iframeContents.open();
-      iframeContents.write('<html id="iframe-'+iframeId+'">');
-      iframeContents.write('<link href="'+cssUrl+'" rel="stylesheet" type="text/css"/>');
-      iframeContents.write('<link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet" type="text/css"/>');
-      iframeContents.write('<script src="'+jQueryUrl+'"></script>');
-      iframeContents.write('<script src="'+markdownParserUrl+'"></script>');
-      iframeContents.write('<div id="jsonData" style="display: none;">'+response+'</div>');
-      iframeContents.write('<script src="'+iframeJsUrl+'"></script>');
-      iframeContents.close();
-    });
+    // ajax(url, function(err, response) {
+    //   if (err || !response || response.length == 0)
+    //     return;
+    //
+    //   var iframeContents = iframe.contentWindow.document;
+    //   iframeContents.open();
+    //   iframeContents.write('<html id="iframe-'+iframeId+'">');
+    //   iframeContents.write('<link href="'+cssUrl+'" rel="stylesheet" type="text/css"/>');
+    //   iframeContents.write('<link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet" type="text/css"/>');
+    //   iframeContents.write('<script src="'+jQueryUrl+'"></script>');
+    //   iframeContents.write('<script src="'+markdownParserUrl+'"></script>');
+    //   iframeContents.write('<div id="jsonData" style="display: none;">'+response+'</div>');
+    //   iframeContents.write('<script src="'+iframeJsUrl+'"></script>');
+    //   iframeContents.close();
+    // });
   }
 
   this.resizeIframe = function(iframeId, height, width) {
@@ -139,14 +140,23 @@ var explaain = new (function() {
   }
 
   function showOverlay(cardId) {
+
+    if (window.frames['explaain-overlay'].postMessage) {
+      // e.g. Safari
+      window.frames['explaain-overlay'].postMessage({ action: 'open', key: cardId }, "*");
+    } else if (window.frames['explaain-overlay'].contentWindow.postMessage) {
+      // e.g. Chrome, Firefox
+      window.frames['explaain-overlay'].contentWindow.postMessage({ action: 'open', key: cardId }, "*");
+    }
+
     // @TODO if cardId passed, pass message to iframe to load card
-    if (overlayUrl)
-      document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
+    // if (overlayUrl)
+    //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
     document.getElementById("explaain-overlay").style.opacity = "1";
     document.getElementById("explaain-overlay").style.visibility = "visible";
   };
   this.showOverlay = showOverlay;
-  
+
   // Note: As we cannot detect clicks inside an iframe, this must be called
   // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
   function hideOverlay() {
@@ -154,7 +164,7 @@ var explaain = new (function() {
     document.getElementById("explaain-overlay").style.visibility = "hidden";
   }
   this.hideOverlay =  hideOverlay;
-  
+
   // We can't detect clicks inside an iframe, but as long as it doesn't have
   // focus we can still detect keyboard events and hide it if ESC is pressed.
   document.onkeydown = function(evt) {
@@ -268,3 +278,23 @@ var explaain = new (function() {
 
   return this;
 });
+
+
+
+
+
+
+
+  window.addEventListener('message', function(event) {
+    if (event.data.action == "explaain-resize") {
+      document.getElementById(event.data.frameId).style.height = event.data.height+'px';
+      document.getElementById(event.data.frameId).style.width  = '100%';
+    }
+    if (event.data.action == "explaain-open") {
+      console.log(event.data.url);
+      explaain.showOverlay(event.data.url);
+    }
+    if (event.data.action == "explaain-hide-overlay") {
+      explaain.hideOverlay();
+    }
+  }, false);

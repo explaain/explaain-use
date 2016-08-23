@@ -58,3 +58,18 @@ function getCardHtml(card) {
         +'  </div>'
         +'</div>';
 }
+
+
+
+
+//TEMPORARY!
+
+window.addEventListener('message', function(event) {
+   switch (event.data.action) {
+      case "open": //Does exactly the same as 'preview' but the card id variable is called 'key' not 'id'
+        console.log('open!!!');
+        // closeAllLayers();
+        // openLayer(0, [event.data.key], 0, 0);
+        break;
+      }
+ }, false);
