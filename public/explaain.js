@@ -63,8 +63,10 @@ var explaain = new (function() {
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.opacity = "0";
-    iframe.style.visibility = "hidden";
+    iframe.style.pointerEvents = "none";
+    // iframe.style.visibility = "hidden";
     iframe.style.background = "rgba(0,0,0,0.5)";
+    iframe.style.transition = "opacity 0.5s";
     document.body.appendChild(iframe);
   });
 
@@ -153,7 +155,8 @@ var explaain = new (function() {
     // if (overlayUrl)
     //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
     document.getElementById("explaain-overlay").style.opacity = "1";
-    document.getElementById("explaain-overlay").style.visibility = "visible";
+    document.getElementById("explaain-overlay").style.pointerEvents = "all";
+    // document.getElementById("explaain-overlay").style.visibility = "visible";
   };
   this.showOverlay = showOverlay;
 
@@ -161,7 +164,8 @@ var explaain = new (function() {
   // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
   function hideOverlay() {
     document.getElementById("explaain-overlay").style.opacity = "0";
-    document.getElementById("explaain-overlay").style.visibility = "hidden";
+    document.getElementById("explaain-overlay").style.pointerEvents = "none";
+    // document.getElementById("explaain-overlay").style.visibility = "hidden";
   }
   this.hideOverlay =  hideOverlay;
 
