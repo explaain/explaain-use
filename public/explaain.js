@@ -23,7 +23,7 @@ var explaain = new (function() {
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
   var overlayUrl = baseUrl+"iframe/overlay.html";
-
+  overlayUrl = 'http://app.explaain.com/?embed=true&embedType=overlay'
   /**
    * Run on page load
    */
@@ -109,7 +109,7 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
-    iframe.src = 'http://app.dev.explaain.com/?' + type + 'Url=' + url + '&embed=true';
+    iframe.src = 'http://app.explaain.com/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
@@ -140,9 +140,18 @@ var explaain = new (function() {
   }
 
   function showOverlay(cardId) {
+
+    if (window.frames['explaain-overlay'].postMessage) {
+      // e.g. Safari
+      window.frames['explaain-overlay'].postMessage({ action: 'open', key: cardId }, "*");
+    } else if (window.frames['explaain-overlay'].contentWindow.postMessage) {
+      // e.g. Chrome, Firefox
+      window.frames['explaain-overlay'].contentWindow.postMessage({ action: 'open', key: cardId }, "*");
+    }
+
     // @TODO if cardId passed, pass message to iframe to load card
-    if (overlayUrl)
-      document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
+    // if (overlayUrl)
+    //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
     document.getElementById("explaain-overlay").style.opacity = "1";
     document.getElementById("explaain-overlay").style.visibility = "visible";
   };
@@ -269,3 +278,23 @@ var explaain = new (function() {
 
   return this;
 });
+
+
+
+
+
+
+
+  window.addEventListener('message', function(event) {
+    if (event.data.action == "explaain-resize") {
+      document.getElementById(event.data.frameId).style.height = event.data.height+'px';
+      document.getElementById(event.data.frameId).style.width  = '100%';
+    }
+    if (event.data.action == "explaain-open") {
+      console.log(event.data.url);
+      explaain.showOverlay(event.data.url);
+    }
+    if (event.data.action == "explaain-hide-overlay") {
+      explaain.hideOverlay();
+    }
+  }, false);
