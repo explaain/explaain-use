@@ -13,6 +13,7 @@ var explaain = new (function() {
 
   var apiServer = "http://api.explaain.com";
   var appServer = "http://app.explaain.com";
+  // var appServer = "http://localhost:5000";
 
   var baseUrl = "";
   if (window.location.hostname && window.location.hostname != "localhost")
@@ -23,8 +24,10 @@ var explaain = new (function() {
   var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
-  var overlayUrl = baseUrl+"iframe/overlay.html";
-  overlayUrl = 'http://app.explaain.com/?embed=true&embedType=overlay'
+  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay'
+
+  var overlayShowing = false;
+
   /**
    * Run on page load
    */
@@ -53,11 +56,11 @@ var explaain = new (function() {
     var iframe = document.createElement('iframe');
     iframe.id = "explaain-overlay";
     iframe.src = overlayUrl;
-    iframe.scrolling = "no";
+    // iframe.scrolling = "no";
     iframe.frameBorder = "0";
     iframe.style.position = "fixed";
-    iframe.style.overflow = "hidden";
-    iframe.style.zIndex = "1000000";
+    iframe.style.overflow = "scroll";
+    iframe.style.zIndex = "100000000000000";
     iframe.style.border = "none";
     iframe.style.top = "0";
     iframe.style.left = "0";
@@ -91,13 +94,23 @@ var explaain = new (function() {
       var href = target.getAttribute('href');
       var regEx = new RegExp('^'+RegExp.escape(apiServer));
       var regExApp = new RegExp('^'+RegExp.escape(appServer)); //This is to allow people to link to app.explaain.com/cardID as well as api.expl.....
-      if (regEx.test(href) === true || regExApp.test(href) === true) {
+      if (regEx.test(href) === true || regExApp.test(href) === true || href.search('localhost:5000') > -1) {
         e.preventDefault();
         href = href.replace('app.explaain.com','api.explaain.com');
+        href = href.replace('app.dev.explaain.com','api.dev.explaain.com');
+        href = href.replace('localhost:5000','api.explaain.com');
         showOverlay(href);
         // Return false to prevent a touch event from also trigging a click
         return false;
+      } else {
+          if (overlayShowing) {
+            hideOverlay();
+          }
       }
+    } else {
+        if (overlayShowing) {
+          hideOverlay();
+        }
     }
   }
 
@@ -114,7 +127,7 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
-    iframe.src = 'http://app.explaain.com/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
+    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
@@ -160,6 +173,9 @@ var explaain = new (function() {
     document.getElementById("explaain-overlay").style.opacity = "1";
     document.getElementById("explaain-overlay").style.pointerEvents = "all";
     // document.getElementById("explaain-overlay").style.visibility = "visible";
+
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+    overlayShowing = true;
   };
   this.showOverlay = showOverlay;
 
@@ -169,6 +185,9 @@ var explaain = new (function() {
     document.getElementById("explaain-overlay").style.opacity = "0";
     document.getElementById("explaain-overlay").style.pointerEvents = "none";
     // document.getElementById("explaain-overlay").style.visibility = "hidden";
+
+    document.getElementsByTagName("body")[0].style.overflow = "scroll";
+    overlayShowing = false;
   }
   this.hideOverlay =  hideOverlay;
 
@@ -273,9 +292,8 @@ var explaain = new (function() {
     if (!content)
       return;
     var textColumns = content.getElementsByClassName('left-column');
-    if (!textColumns)
-      return;
-    textColumns[0].innerHTML = textColumns[0].innerHTML.replace("Donald Trump", '<a href="#donald-trump" class="explaain-link">Donald Trump</a>');
+    if (textColumns.length)
+      textColumns[0].innerHTML = textColumns[0].innerHTML.replace("Donald Trump", '<a href="#donald-trump" class="explaain-link">Donald Trump</a>');
   }
 
   String.prototype.replaceAll = function(search, replacement) {
@@ -298,7 +316,6 @@ var explaain = new (function() {
       document.getElementById(event.data.frameId).style.width  = '100%';
     }
     if (event.data.action == "explaain-open") {
-      console.log(event.data.url);
       explaain.showOverlay(event.data.url);
     }
     if (event.data.action == "explaain-hide-overlay") {
