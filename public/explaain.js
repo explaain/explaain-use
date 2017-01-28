@@ -71,6 +71,7 @@ var explaain = new (function() {
     iframe.style.left = "0";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
+    iframe.style.margin = "0";
     iframe.style.opacity = "0";
     iframe.style.pointerEvents = "none";
     // iframe.style.visibility = "hidden";
