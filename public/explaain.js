@@ -96,27 +96,34 @@ var explaain = new (function() {
 
   function clickEvent(e) {
     var target = e.target || e.srcElement;
+    var explaainHref = checkExplaainLink(target);
+    if (explaainHref) {
+      e.preventDefault();
+      explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
+      explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+      explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
+      showOverlay(explaainHref);
+      // Return false to prevent a touch event from also trigging a click
+      return false;
+    } else {
+        if (overlayShowing) {
+          hideOverlay();
+        }
+    }
+  }
+
+  function checkExplaainLink(target) {
     if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
       var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
       var regEx = new RegExp('^'+RegExp.escape(apiServer));
       var regExApp = new RegExp('^'+RegExp.escape(appServer)); //This is to allow people to link to app.explaain.com/cardID as well as api.expl.....
       if (regEx.test(href) === true || regExApp.test(href) === true || href.search('localhost:5000') > -1) {
-        e.preventDefault();
-        href = href.replace('app.explaain.com','api.explaain.com');
-        href = href.replace('app.dev.explaain.com','api.dev.explaain.com');
-        href = href.replace('localhost:5000','api.explaain.com');
-        showOverlay(href);
-        // Return false to prevent a touch event from also trigging a click
-        return false;
+        return href;
       } else {
-          if (overlayShowing) {
-            hideOverlay();
-          }
+        return false
       }
     } else {
-        if (overlayShowing) {
-          hideOverlay();
-        }
+      return false
     }
   }
 
@@ -291,6 +298,18 @@ var explaain = new (function() {
     var myExplaainStyleTag = document.createElement('style');
     myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
     myExplaainStyleTag.innerHTML = myExplaainStyles;
+
+    //Adds this class to all explaain links on the page
+    var pageLinks = Array.prototype.slice.call(document.getElementsByTagName('a'));
+    console.log(pageLinks);
+    for (var i in pageLinks) {
+      console.log(i);
+      console.log(pageLinks[i]);
+      if (checkExplaainLink(pageLinks[i])) {
+        console.log('found!');
+        pageLinks[i].className += " explaain-link";
+      }
+    }
   }
 
   function linkExplaainKeywords() {
