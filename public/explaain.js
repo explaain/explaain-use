@@ -28,6 +28,11 @@ var explaain = new (function() {
 
   var overlayShowing = false;
 
+
+  function getOverlayShowing() {
+    return overlayShowing;
+  }
+
   /**
    * Run on page load
    */
@@ -90,8 +95,8 @@ var explaain = new (function() {
 
   function clickEvent(e) {
     var target = e.target || e.srcElement;
-    if (target.tagName === 'A') {
-      var href = target.getAttribute('href');
+    if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
+      var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
       var regEx = new RegExp('^'+RegExp.escape(apiServer));
       var regExApp = new RegExp('^'+RegExp.escape(appServer)); //This is to allow people to link to app.explaain.com/cardID as well as api.expl.....
       if (regEx.test(href) === true || regExApp.test(href) === true || href.search('localhost:5000') > -1) {
@@ -151,7 +156,7 @@ var explaain = new (function() {
     // });
   }
 
-  this.resizeIframe = function(iframeId, height, width) {
+  function resizeIframe(iframeId, height, width) {
     // Assuming horizontal layout for now and only adjusting height
     document.getElementById(iframeId).style.height  = height+'px';
     document.getElementById(iframeId).style.width  = '100%';
@@ -176,8 +181,8 @@ var explaain = new (function() {
 
     document.getElementsByTagName("body")[0].style.overflow = "hidden";
     overlayShowing = true;
+    console.log('overlayShowing:' + overlayShowing);
   };
-  this.showOverlay = showOverlay;
 
   // Note: As we cannot detect clicks inside an iframe, this must be called
   // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
@@ -188,8 +193,8 @@ var explaain = new (function() {
 
     document.getElementsByTagName("body")[0].style.overflow = "scroll";
     overlayShowing = false;
+    console.log('overlayShowing:' + overlayShowing);
   }
-  this.hideOverlay =  hideOverlay;
 
   // We can't detect clicks inside an iframe, but as long as it doesn't have
   // focus we can still detect keyboard events and hide it if ESC is pressed.
@@ -301,6 +306,12 @@ var explaain = new (function() {
     return target.replace(new RegExp(search, 'g'), replacement);
   };
 
+  this.getOverlayShowing = getOverlayShowing;
+  this.showOverlay = showOverlay;
+  this.hideOverlay = hideOverlay;
+  this.resizeIframe = resizeIframe;
+
+
   return this;
 });
 
@@ -310,15 +321,15 @@ var explaain = new (function() {
 
 
 
-  window.addEventListener('message', function(event) {
-    if (event.data.action == "explaain-resize") {
-      document.getElementById(event.data.frameId).style.height = event.data.height+'px';
-      document.getElementById(event.data.frameId).style.width  = '100%';
-    }
-    if (event.data.action == "explaain-open") {
-      explaain.showOverlay(event.data.url);
-    }
-    if (event.data.action == "explaain-hide-overlay") {
-      explaain.hideOverlay();
-    }
-  }, false);
+window.addEventListener('message', function(event) {
+  if (event.data.action == "explaain-resize") {
+    document.getElementById(event.data.frameId).style.height = event.data.height+'px';
+    document.getElementById(event.data.frameId).style.width  = '100%';
+  }
+  if (event.data.action == "explaain-open") {
+    explaain.showOverlay(event.data.url);
+  }
+  if (event.data.action == "explaain-hide-overlay") {
+    explaain.hideOverlay();
+  }
+}, false);
