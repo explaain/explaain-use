@@ -12,6 +12,8 @@ var explaain = new (function() {
   var version = "1.3.0";
 
   var apiServer = "http://api.explaain.com";
+  var appServer = "http://app.explaain.com";
+  // var appServer = "http://localhost:5000";
 
   var baseUrl = "";
   if (window.location.hostname && window.location.hostname != "localhost")
@@ -22,13 +24,20 @@ var explaain = new (function() {
   var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
-  var overlayUrl = baseUrl+"iframe/overlay.html";
-  overlayUrl = 'http://app.explaain.com/?embed=true&embedType=overlay'
+  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay'
+
+  var overlayShowing = false;
+
+
+  function getOverlayShowing() {
+    return overlayShowing;
+  }
+
   /**
    * Run on page load
    */
   onPageReady(function() {
-    linkExplaainKeywords();
+    // linkExplaainKeywords();
     addExplaainStyles();
 
     var elements = document.getElementsByClassName("explaain");
@@ -52,16 +61,17 @@ var explaain = new (function() {
     var iframe = document.createElement('iframe');
     iframe.id = "explaain-overlay";
     iframe.src = overlayUrl;
-    iframe.scrolling = "no";
+    // iframe.scrolling = "no";
     iframe.frameBorder = "0";
     iframe.style.position = "fixed";
-    iframe.style.overflow = "hidden";
-    iframe.style.zIndex = "1000000";
+    iframe.style.overflow = "scroll";
+    iframe.style.zIndex = "100000000000000";
     iframe.style.border = "none";
     iframe.style.top = "0";
     iframe.style.left = "0";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
+    iframe.style.margin = "0";
     iframe.style.opacity = "0";
     iframe.style.pointerEvents = "none";
     // iframe.style.visibility = "hidden";
@@ -86,15 +96,34 @@ var explaain = new (function() {
 
   function clickEvent(e) {
     var target = e.target || e.srcElement;
-    if (target.tagName === 'A') {
-      var href = target.getAttribute('href');
+    var explaainHref = checkExplaainLink(target);
+    if (explaainHref) {
+      e.preventDefault();
+      explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
+      explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+      explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
+      showOverlay(explaainHref);
+      // Return false to prevent a touch event from also trigging a click
+      return false;
+    } else {
+        if (overlayShowing) {
+          hideOverlay();
+        }
+    }
+  }
+
+  function checkExplaainLink(target) {
+    if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
+      var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
       var regEx = new RegExp('^'+RegExp.escape(apiServer));
-      if (regEx.test(href) === true) {
-        e.preventDefault();
-        showOverlay(href);
-        // Return false to prevent a touch event from also trigging a click
-        return false;
+      var regExApp = new RegExp('^'+RegExp.escape(appServer)); //This is to allow people to link to app.explaain.com/cardID as well as api.expl.....
+      if (regEx.test(href) === true || regExApp.test(href) === true || href.search('localhost:5000') > -1) {
+        return href;
+      } else {
+        return false
       }
+    } else {
+      return false
     }
   }
 
@@ -111,7 +140,7 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
-    iframe.src = 'http://app.explaain.com/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
+    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
@@ -135,7 +164,7 @@ var explaain = new (function() {
     // });
   }
 
-  this.resizeIframe = function(iframeId, height, width) {
+  function resizeIframe(iframeId, height, width) {
     // Assuming horizontal layout for now and only adjusting height
     document.getElementById(iframeId).style.height  = height+'px';
     document.getElementById(iframeId).style.width  = '100%';
@@ -157,8 +186,11 @@ var explaain = new (function() {
     document.getElementById("explaain-overlay").style.opacity = "1";
     document.getElementById("explaain-overlay").style.pointerEvents = "all";
     // document.getElementById("explaain-overlay").style.visibility = "visible";
+
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+    overlayShowing = true;
+    console.log('overlayShowing:' + overlayShowing);
   };
-  this.showOverlay = showOverlay;
 
   // Note: As we cannot detect clicks inside an iframe, this must be called
   // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
@@ -166,8 +198,11 @@ var explaain = new (function() {
     document.getElementById("explaain-overlay").style.opacity = "0";
     document.getElementById("explaain-overlay").style.pointerEvents = "none";
     // document.getElementById("explaain-overlay").style.visibility = "hidden";
+
+    document.getElementsByTagName("body")[0].style.overflow = "scroll";
+    overlayShowing = false;
+    console.log('overlayShowing:' + overlayShowing);
   }
-  this.hideOverlay =  hideOverlay;
 
   // We can't detect clicks inside an iframe, but as long as it doesn't have
   // focus we can still detect keyboard events and hide it if ESC is pressed.
@@ -263,6 +298,18 @@ var explaain = new (function() {
     var myExplaainStyleTag = document.createElement('style');
     myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
     myExplaainStyleTag.innerHTML = myExplaainStyles;
+
+    //Adds this class to all explaain links on the page
+    var pageLinks = Array.prototype.slice.call(document.getElementsByTagName('a'));
+    console.log(pageLinks);
+    for (var i in pageLinks) {
+      console.log(i);
+      console.log(pageLinks[i]);
+      if (checkExplaainLink(pageLinks[i])) {
+        console.log('found!');
+        pageLinks[i].className += " explaain-link";
+      }
+    }
   }
 
   function linkExplaainKeywords() {
@@ -270,15 +317,20 @@ var explaain = new (function() {
     if (!content)
       return;
     var textColumns = content.getElementsByClassName('left-column');
-    if (!textColumns)
-      return;
-    textColumns[0].innerHTML = textColumns[0].innerHTML.replace("Donald Trump", '<a href="#donald-trump" class="explaain-link">Donald Trump</a>');
+    if (textColumns.length)
+      textColumns[0].innerHTML = textColumns[0].innerHTML.replace("Donald Trump", '<a href="#donald-trump" class="explaain-link">Donald Trump</a>');
   }
 
   String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
   };
+
+  this.getOverlayShowing = getOverlayShowing;
+  this.showOverlay = showOverlay;
+  this.hideOverlay = hideOverlay;
+  this.resizeIframe = resizeIframe;
+
 
   return this;
 });
@@ -289,16 +341,15 @@ var explaain = new (function() {
 
 
 
-  window.addEventListener('message', function(event) {
-    if (event.data.action == "explaain-resize") {
-      document.getElementById(event.data.frameId).style.height = event.data.height+'px';
-      document.getElementById(event.data.frameId).style.width  = '100%';
-    }
-    if (event.data.action == "explaain-open") {
-      console.log(event.data.url);
-      explaain.showOverlay(event.data.url);
-    }
-    if (event.data.action == "explaain-hide-overlay") {
-      explaain.hideOverlay();
-    }
-  }, false);
+window.addEventListener('message', function(event) {
+  if (event.data.action == "explaain-resize") {
+    document.getElementById(event.data.frameId).style.height = event.data.height+'px';
+    document.getElementById(event.data.frameId).style.width  = '100%';
+  }
+  if (event.data.action == "explaain-open") {
+    explaain.showOverlay(event.data.url);
+  }
+  if (event.data.action == "explaain-hide-overlay") {
+    explaain.hideOverlay();
+  }
+}, false);
