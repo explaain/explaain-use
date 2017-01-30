@@ -99,9 +99,9 @@ var explaain = new (function() {
     var explaainHref = checkExplaainLink(target);
     if (explaainHref) {
       e.preventDefault();
-      explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
-      explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
-      explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
+      // explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
+      // explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+      // explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
       showOverlay(explaainHref);
       // Return false to prevent a touch event from also trigging a click
       return false;
@@ -115,9 +115,8 @@ var explaain = new (function() {
   function checkExplaainLink(target) {
     if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
       var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
-      var regEx = new RegExp('^'+RegExp.escape(apiServer));
-      var regExApp = new RegExp('^'+RegExp.escape(appServer)); //This is to allow people to link to app.explaain.com/cardID as well as api.expl.....
-      if (regEx.test(href) === true || regExApp.test(href) === true || href.search('localhost:5000') > -1) {
+      var acceptableDomains = ['api.explaain.com', 'app.explaain.com', 'api.dev.explaain.com', 'app.dev.explaain.com', apiServer, appServer]
+      if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|')).test(href)) {
         return href;
       } else {
         return false
@@ -189,7 +188,6 @@ var explaain = new (function() {
 
     document.getElementsByTagName("body")[0].style.overflow = "hidden";
     overlayShowing = true;
-    console.log('overlayShowing:' + overlayShowing);
   };
 
   // Note: As we cannot detect clicks inside an iframe, this must be called
@@ -201,7 +199,6 @@ var explaain = new (function() {
 
     document.getElementsByTagName("body")[0].style.overflow = "scroll";
     overlayShowing = false;
-    console.log('overlayShowing:' + overlayShowing);
   }
 
   // We can't detect clicks inside an iframe, but as long as it doesn't have
@@ -301,12 +298,8 @@ var explaain = new (function() {
 
     //Adds this class to all explaain links on the page
     var pageLinks = Array.prototype.slice.call(document.getElementsByTagName('a'));
-    console.log(pageLinks);
     for (var i in pageLinks) {
-      console.log(i);
-      console.log(pageLinks[i]);
       if (checkExplaainLink(pageLinks[i])) {
-        console.log('found!');
         pageLinks[i].className += " explaain-link";
       }
     }
@@ -330,6 +323,7 @@ var explaain = new (function() {
   this.showOverlay = showOverlay;
   this.hideOverlay = hideOverlay;
   this.resizeIframe = resizeIframe;
+  // this.checkExplaainLink = checkExplaainLink;
 
 
   return this;

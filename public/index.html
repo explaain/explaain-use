@@ -52,34 +52,38 @@
 
       <h2>How to use explaain</h2>
 
-      <h3>1) Display related cards by keywords</h3>
+      <h3>1) How to link to cards in-line</h3>
+      <p class="lead">You can also also link to cards in text and it will detect the links.</p>
+      <h4>HTML</h4>
+      <pre>&lt;p&gt;
+  Excepteur sint occaecat cupidatat non proident, sunt in culpa
+  &lt;a href="http://app.explaain.com/Person/57b31ba4c38e87110021a439"&gt;Theresa May&lt;/a&gt;
+  qui officia deserunt mollit anim id est laborum.
+&lt;/p&gt;</pre>
+      <h4>Example</h4>
+      <div class="explaain">
+        <p>
+          Excepteur sint occaecat cupidatat non proident, sunt in culpa <a href="http://app.explaain.com/Person/57b31ba4c38e87110021a439">Theresa May</a> qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+          <!-- Excepteur sint occaecat cupidatat non proident, sunt in culpa <a href="http://app.explaain.com/cards/57c9d70e5b3c7111005578c0">European Single Market</a> qui officia deserunt mollit anim id est laborum. -->
+        </p>
+      </div>
+
+      <h3>2) Display related cards by keywords (coming soon!)</h3>
       <p class="lead">This example displays cards matching the keywords "Theresa May".</p>
       <h4>HTML</h4>
       <pre>&lt;div class="explaain" data-keywords="Theresa May"&gt;&lt;/div&gt;</pre>
       <h4>Example</h4>
       <div class="explaain" data-keywords="Theresa May"></div>
 
-      <h3>2) Display a specific card by ID</h3>
+      <h3>3) Display a specific card by ID (coming soon!)</h3>
       <p class="lead">This example displays a specific card using it's ID.</p>
       <h4>HTML</h4>
       <pre>&lt;div class="explaain" data-id="http://api.explaain.com/Person/57b31ba4c38e87110021a439"&gt;&lt;/div&gt;</pre>
       <h4>Example</h4>
       <div class="explaain" data-id="http://api.explaain.com/Person/57b31ba4c38e87110021a439"></div>
 
-      <h3>3) Link to cards in-line</h3>
-      <p class="lead">You can also also link to cards in text and it will detect the links.</p>
-      <h4>HTML</h4>
-      <pre>&lt;p&gt;
-  Excepteur sint occaecat cupidatat non proident, sunt in culpa
-  &lt;a href="http://api.explaain.com/Person/57b31ba4c38e87110021a439"&gt;Theresa May&lt;/a&gt;
-  qui officia deserunt mollit anim id est laborum.
-&lt;/p&gt;</pre>
-      <h4>Example</h4>
-      <div class="explaain">
-        <p>
-          Excepteur sint occaecat cupidatat non proident, sunt in culpa <a href="http://api.explaain.com/Person/57b31ba4c38e87110021a439">Theresa May</a> qui officia deserunt mollit anim id est laborum.
-        </p>
-      </div>
 
       <hr/>
       <a href="http://explaain.com">explaain.com</a>
