@@ -24,7 +24,7 @@ var explaain = new (function() {
   var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
-  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay'
+  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href);
 
   var overlayShowing = false;
 
@@ -139,7 +139,7 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
-    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id;
+    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id + '&frameParent=' + encodeURIComponent(window.location.href);
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
