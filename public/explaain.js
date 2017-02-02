@@ -24,7 +24,7 @@ var explaain = new (function() {
   var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
-  var controlGroup = getParameterByName('explaainControlGroup') == "true";
+  var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
 
   var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href) + '&controlGroup=' + controlGroup;
   var overlayShowing = false;
