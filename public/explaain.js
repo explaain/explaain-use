@@ -24,8 +24,9 @@ var explaain = new (function() {
   var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
   var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
-  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href);
+  var controlGroup = getParameterByName('explaainControlGroup') == "true";
 
+  var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href) + '&controlGroup=' + controlGroup;
   var overlayShowing = false;
 
 
@@ -33,30 +34,34 @@ var explaain = new (function() {
     return overlayShowing;
   }
 
+
   /**
    * Run on page load
    */
   onPageReady(function() {
-    // linkExplaainKeywords();
-    addExplaainStyles();
+    if (!controlGroup) {
+      // linkExplaainKeywords();
+      addExplaainStyles();
 
-    var elements = document.getElementsByClassName("explaain");
-    for (var i=0; i < elements.length; i++) {
-      var element = elements[i];
-      var css = {
-        height: element.getAttribute("data-height") || "100%",
-        width: element.getAttribute("data-width") || "100%"
-      }
-      if (element.getAttribute("data-id")) {
-        insertIframe(element, 'card', element.getAttribute("data-id"), css);
-      } else if (element.getAttribute("data-keywords")) {
-        // @TODO Search cards other than Headline cards?
-        // (Still need to add new API endpoint that searches across all cards)
-        insertIframe(element, 'search', apiServer+"/Headline/search/?q="+encodeURIComponent(element.getAttribute("data-keywords")), css);
-      } else {
-        // Assume <p> tags, insert links to cards
+      var elements = document.getElementsByClassName("explaain");
+      for (var i=0; i < elements.length; i++) {
+        var element = elements[i];
+        var css = {
+          height: element.getAttribute("data-height") || "100%",
+          width: element.getAttribute("data-width") || "100%"
+        }
+        if (element.getAttribute("data-id")) {
+          insertIframe(element, 'card', element.getAttribute("data-id"), css);
+        } else if (element.getAttribute("data-keywords")) {
+          // @TODO Search cards other than Headline cards?
+          // (Still need to add new API endpoint that searches across all cards)
+          insertIframe(element, 'search', apiServer+"/Headline/search/?q="+encodeURIComponent(element.getAttribute("data-keywords")), css);
+        } else {
+          // Assume <p> tags, insert links to cards
+        }
       }
     }
+
     // Add overlay iframe
     var iframe = document.createElement('iframe');
     iframe.id = "explaain-overlay";
@@ -80,14 +85,16 @@ var explaain = new (function() {
     document.body.appendChild(iframe);
   });
 
-  /**
-   * Intercept clicks and check if they are to explaain cards
-   */
-  if (document.addEventListener) {
-      document.addEventListener('click', clickEvent);
-      document.addEventListener('touchstart', clickEvent);
-  } else if (document.attachEvent) {
-      document.attachEvent('onclick', clickEvent);
+  if (!controlGroup) {
+    /**
+     * Intercept clicks and check if they are to explaain cards
+     */
+    if (document.addEventListener) {
+        document.addEventListener('click', clickEvent);
+        document.addEventListener('touchstart', clickEvent);
+    } else if (document.attachEvent) {
+        document.attachEvent('onclick', clickEvent);
+    }
   }
 
   RegExp.escape = function(str) {
@@ -139,7 +146,7 @@ var explaain = new (function() {
     iframe.scrolling = "no";
     iframe.style.border = "none";
     iframe.frameBorder = "0";
-    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id + '&frameParent=' + encodeURIComponent(window.location.href);
+    iframe.src = appServer + '/?' + type + 'Url=' + url + '&embed=true&embedLinkRoute=true&frameId=' + iframe.id + '&frameParent=' + encodeURIComponent(window.location.href) + '&controlGroup=' + controlGroup;
     var cssParams = Object.keys(css);
     for (var i=0; i < cssParams.length; i++) {
       iframe.style[cssParams[i]] = css[cssParams[i]]
@@ -318,6 +325,18 @@ var explaain = new (function() {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
   };
+
+
+
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
 
   this.getOverlayShowing = getOverlayShowing;
   this.showOverlay = showOverlay;
