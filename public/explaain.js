@@ -6,7 +6,7 @@
  * @version 1.2
  */
 if (!explaain) {
-  
+
   var explaain = new (function() {
 
     // We are using a version variable for cache busting
@@ -16,6 +16,11 @@ if (!explaain) {
     var apiServer = "http://api.explaain.com";
     var appServer = "http://app.explaain.com";
     // var appServer = "http://localhost:5000";
+
+    if (window.location.protocol == 'https:') {
+      apiServer = "https://explaain-api.herokuapp.com";
+      appServer = "https://explaain-app.herokuapp.com";
+    }
 
     var baseUrl = "";
     if (window.location.hostname && window.location.hostname != "localhost")
@@ -335,10 +340,10 @@ if (!explaain) {
             insertRemoteLinks(JSON.parse(xmlhttp.responseText).records);
           }
           else if (xmlhttp.status == 400) {
-            alert('There was an error 400');
+            console.log('There was an error 400');
           }
           else {
-            alert('something else other than 200 was returned');
+            console.log('something else other than 200 was returned');
           }
         }
       };
