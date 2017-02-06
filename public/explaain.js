@@ -136,8 +136,8 @@ if (!explaain) {
     function checkExplaainLink(target) {
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
-        var acceptableDomains = ['api.explaain.com', 'app.explaain.com', 'api.dev.explaain.com', 'app.dev.explaain.com', apiServer, appServer]
-        if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|')).test(href)) {
+        var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', apiServer + '\/.+', appServer + '\/.+']
+        if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
           return href;
         } else {
           return false
@@ -392,7 +392,7 @@ if (!explaain) {
     this.showOverlay = showOverlay;
     this.hideOverlay = hideOverlay;
     this.resizeIframe = resizeIframe;
-    // this.checkExplaainLink = checkExplaainLink;
+    this.checkExplaainLink = checkExplaainLink;
 
 
     return this;
