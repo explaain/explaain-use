@@ -329,14 +329,12 @@ if (!explaain) {
 
     function getRemoteLinks() {
       var airtableListEndpoint = airtableEndpoint + '&filterByFormula=' + encodeURIComponent('{Webpage}="' + window.location.href + '"');
-      console.log(window.location.href);
 
       var xmlhttp = new XMLHttpRequest();
 
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
           if (xmlhttp.status == 200) {
-            console.log(JSON.parse(xmlhttp.responseText).records);
             insertRemoteLinks(JSON.parse(xmlhttp.responseText).records);
           }
           else if (xmlhttp.status == 400) {
