@@ -165,7 +165,10 @@ if (!explaain) {
       for (var i=0; i < cssParams.length; i++) {
         iframe.style[cssParams[i]] = css[cssParams[i]]
       }
-      target.appendChild(iframe);
+      var iFrameElement = target.appendChild(iframe);
+
+      //Update URL parameters in case iFrame has been cached
+      iFrameElement.contentWindow.location.href = iFrameElement.src;
 
       // ajax(url, function(err, response) {
       //   if (err || !response || response.length == 0)
@@ -404,8 +407,10 @@ if (!explaain) {
 
   window.addEventListener('message', function(event) {
     if (event.data.action == "explaain-resize") {
-      document.getElementById(event.data.frameId).style.height = event.data.height+'px';
-      document.getElementById(event.data.frameId).style.width  = '100%';
+      if (document.getElementById(event.data.frameId)){
+        document.getElementById(event.data.frameId).style.height = event.data.height+'px';
+        document.getElementById(event.data.frameId).style.width  = '100%';
+      }
     }
     if (event.data.action == "explaain-open") {
       explaain.showOverlay(event.data.url);
