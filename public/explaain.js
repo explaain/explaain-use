@@ -104,8 +104,8 @@ if (!explaain) {
       * Intercept clicks and check if they are to explaain cards
       */
       if (document.addEventListener) {
-        document.addEventListener('click', clickEvent);
-        document.addEventListener('touchstart', clickEvent);
+        document.addEventListener('click', clickEvent, {passive: false});
+        document.addEventListener('touchstart', clickEvent, {passive: false});
       } else if (document.attachEvent) {
         document.attachEvent('onclick', clickEvent);
       }
