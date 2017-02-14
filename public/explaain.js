@@ -15,7 +15,6 @@ if (!explaain) {
 
     var apiServer = "http://api.explaain.com";
     var appServer = "http://app.explaain.com";
-    // var appServer = "http://localhost:5000";
 
     if (window.location.protocol == 'https:') {
       apiServer = "https://explaain-api.herokuapp.com";
@@ -23,8 +22,11 @@ if (!explaain) {
     }
 
     var baseUrl = "";
-    if (window.location.hostname && window.location.hostname != "localhost")
-    baseUrl = "http://use.explaain.com/"
+    if (window.location.hostname && window.location.hostname != "localhost") {
+      baseUrl = "http://use.explaain.com/"
+    } else {
+      appServer = "http://localhost:5000";
+    }
 
     var cssUrl = baseUrl+"iframe/stylesheet.css?v="+version;
     var jQueryUrl = baseUrl+"iframe/jquery-3.1.0.min.js?v="+version;
