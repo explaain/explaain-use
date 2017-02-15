@@ -391,11 +391,28 @@ if (!explaain) {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+
+    // START QUIZ
+
+    var QuizAnswers = {};
+    var QuizScore = 0;
+
+    function answerQuizQuestion(frameId, correct) {
+      QuizAnswers[frameId] = { answered: true, correct: correct };
+      QuizScore += correct;
+      console.log(QuizAnswers);
+      console.log('QuizScore: ' + QuizScore);
+    }
+
+    // END QUIZ
+
+
     this.getOverlayShowing = getOverlayShowing;
     this.showOverlay = showOverlay;
     this.hideOverlay = hideOverlay;
     this.resizeIframe = resizeIframe;
     this.checkExplaainLink = checkExplaainLink;
+    this.answerQuizQuestion = answerQuizQuestion;
 
 
     return this;
@@ -419,6 +436,9 @@ if (!explaain) {
     }
     if (event.data.action == "explaain-hide-overlay") {
       explaain.hideOverlay();
+    }
+    if (event.data.action == "explaain-answer") {
+      explaain.answerQuizQuestion(event.data.frameId, event.data.correct);
     }
   }, false);
 }
