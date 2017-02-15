@@ -15,7 +15,6 @@ if (!explaain) {
 
     var apiServer = "http://api.explaain.com";
     var appServer = "http://app.explaain.com";
-    // var appServer = "http://localhost:5000";
 
     if (window.location.protocol == 'https:') {
       apiServer = "https://explaain-api.herokuapp.com";
@@ -23,8 +22,11 @@ if (!explaain) {
     }
 
     var baseUrl = "";
-    if (window.location.hostname && window.location.hostname != "localhost")
-    baseUrl = "http://use.explaain.com/"
+    if (window.location.hostname && window.location.hostname != "localhost") {
+      baseUrl = "http://use.explaain.com/"
+    } else {
+      appServer = "http://localhost:5000";
+    }
 
     var cssUrl = baseUrl+"iframe/stylesheet.css?v="+version;
     var jQueryUrl = baseUrl+"iframe/jquery-3.1.0.min.js?v="+version;
@@ -389,11 +391,28 @@ if (!explaain) {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+
+    // START QUIZ
+
+    var QuizAnswers = {};
+    var QuizScore = 0;
+
+    function answerQuizQuestion(frameId, correct) {
+      QuizAnswers[frameId] = { answered: true, correct: correct };
+      QuizScore += correct;
+      console.log(QuizAnswers);
+      console.log('QuizScore: ' + QuizScore);
+    }
+
+    // END QUIZ
+
+
     this.getOverlayShowing = getOverlayShowing;
     this.showOverlay = showOverlay;
     this.hideOverlay = hideOverlay;
     this.resizeIframe = resizeIframe;
     this.checkExplaainLink = checkExplaainLink;
+    this.answerQuizQuestion = answerQuizQuestion;
 
 
     return this;
@@ -417,6 +436,9 @@ if (!explaain) {
     }
     if (event.data.action == "explaain-hide-overlay") {
       explaain.hideOverlay();
+    }
+    if (event.data.action == "explaain-answer") {
+      explaain.answerQuizQuestion(event.data.frameId, event.data.correct);
     }
   }, false);
 }
