@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jeremynevans/explaain-use#readme",
   "dependencies": {
+    "ejs": "^2.5.6",
     "express": "^4.14.0",
     "express-partials": "^0.3.0"
   }

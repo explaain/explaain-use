@@ -136,6 +136,7 @@ if (!explaain) {
     }
 
     function checkExplaainLink(target) {
+      console.log('checking');
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
         var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', apiServer + '\/.+', appServer + '\/.+']
@@ -396,15 +397,26 @@ if (!explaain) {
 
     var QuizAnswers = {};
     var QuizScore = 0;
+    var QuizAnswered = 0;
+    var QuizLength = 10;
 
     function answerQuizQuestion(frameId, correct) {
       QuizAnswers[frameId] = { answered: true, correct: correct };
+      QuizAnswered ++;
       QuizScore += correct;
       console.log(QuizAnswers);
-      console.log('QuizScore: ' + QuizScore);
+      console.log('Score so far: ' + QuizScore + ' / ' + QuizAnswered);
+      if (QuizAnswered == QuizLength) {
+        console.log('Your Result: ' + QuizScore + ' / ' + QuizAnswered);
+      }
     }
 
     // END QUIZ
+
+
+    function openFromInject(key) {
+      showOverlay(key);
+    }
 
 
     this.getOverlayShowing = getOverlayShowing;
@@ -413,6 +425,7 @@ if (!explaain) {
     this.resizeIframe = resizeIframe;
     this.checkExplaainLink = checkExplaainLink;
     this.answerQuizQuestion = answerQuizQuestion;
+    this.openFromInject = openFromInject;
 
 
     return this;
