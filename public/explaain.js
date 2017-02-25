@@ -136,6 +136,7 @@ if (!explaain) {
     }
 
     function checkExplaainLink(target) {
+      console.log('checking');
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
         var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', apiServer + '\/.+', appServer + '\/.+']

@@ -20,7 +20,18 @@
     iframe.style = "border: none;";
     document.body.appendChild(iframe);
   }
+
+  function injectJS(fileURL) {
+    var iFrameHead = window.frames[0].document.getElementsByTagName("head")[0];
+    var myscript = document.createElement('script');
+    myscript.type = 'text/javascript';
+    myscript.src = fileURL; // replace this with your SCRIPT
+    iFrameHead.appendChild(myscript);
+  }
+  injectJS('/explaain.js');
 </script>
+
+
 <!-- <script src="explaain.js"></script> -->
 
 <!-- <iframe sandbox="allow-scripts allow-same-origin allow-forms" src="https://decoded.com/en-gb/" class="card" border="0" frameborder="0"></iframe> -->
