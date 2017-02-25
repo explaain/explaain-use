@@ -118,9 +118,12 @@ if (!explaain) {
     };
 
     function clickEvent(e) {
+      console.log(e);
       var target = e.target || e.srcElement;
       var explaainHref = checkExplaainLink(target);
+      console.log(explaainHref);
       if (explaainHref) {
+        console.log('true!');
         e.preventDefault();
         // explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
         // explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
