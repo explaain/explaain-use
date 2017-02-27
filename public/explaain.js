@@ -106,10 +106,12 @@ if (!explaain) {
       * Intercept clicks and check if they are to explaain cards
       */
       if (document.addEventListener) {
-        document.addEventListener('click', clickEvent, {passive: false});
-        document.addEventListener('touchstart', clickEvent, {passive: false});
+        document.addEventListener('click', clickEvent, {passive: false, capture: true});
+        document.addEventListener('touchstart', clickEvent, {passive: false, capture: true});
+        // document.addEventListener('mouseup', clickEvent, {passive: false, capture: true});
       } else if (document.attachEvent) {
         document.attachEvent('onclick', clickEvent);
+        // document.attachEvent('mouseup', stopProp);
       }
     }
 
@@ -117,17 +119,19 @@ if (!explaain) {
       return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
 
+    function stopProp(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
     function clickEvent(e) {
-      console.log(e);
       var target = e.target || e.srcElement;
       var explaainHref = checkExplaainLink(target);
-      console.log(explaainHref);
       if (explaainHref) {
-        console.log('true!');
         e.preventDefault();
-        // explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
-        // explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
-        // explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
+        e.stopImmediatePropagation();
+        explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
+        explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+        explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
         showOverlay(explaainHref);
         // Return false to prevent a touch event from also trigging a click
         return false;
@@ -139,7 +143,6 @@ if (!explaain) {
     }
 
     function checkExplaainLink(target) {
-      console.log('checking');
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
         var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', apiServer + '\/.+', appServer + '\/.+']
