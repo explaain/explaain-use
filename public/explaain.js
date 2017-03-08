@@ -323,8 +323,8 @@ if (!explaain) {
 
     // Jeremy's additions
     function addExplaainStyles() {
-      var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; }';
-      myExplaainStyles = myExplaainStyles + ' a.explaain-link:hover { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; }';
+      var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; box-shadow: none !important; }';
+      myExplaainStyles = myExplaainStyles + ' a.explaain-link:hover { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; box-shadow: none !important; }';
       var myExplaainStyleTag = document.createElement('style');
       myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
       myExplaainStyleTag.innerHTML = myExplaainStyles;
