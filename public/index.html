@@ -31,6 +31,20 @@
     h1,h2,h3,h4 {
       font-weight: 900;
     }
+    .button-big {
+      display: inline-block;
+      padding: 10px 25px;;
+      font-size: 16px;
+      border: 2px solid #ff6678;
+      border-radius: 10px;
+      color: #ff6678;
+      font-weight: 500;
+    }
+    .button-big:hover {
+      text-decoration: none;
+      color: white;
+      background: #ff6678;
+    }
     </style>
   </head>
   <body>
@@ -46,6 +60,15 @@
       <pre>&lt;script src="http://use.explaain.com/explaain.js"&gt;&lt;/script&gt;</pre>
       <p>
         This script is cross browser, has no dependancies and is under the namespace "explaain" so it won't clash with JavaScript on your site.
+      </p>
+
+      <hr/>
+
+      <p class="lead">Alternatively, to view Explaain temporarily, one page at a time, in your own browser only, use the Explaain bookmarklet:</p>
+
+      <a class="button-big" href="javascript:(function()%7Bfunction inject()%7Bvar d%3Ddocument%2Chost%3D'use.explaain.com'%2Cz%3Dd.createElement('scr'%2B'ipt')%2Cb%3Dd.body%2Cl%3Dd.location%3Btry%7Bif(!b)throw(0)%3Bz.setAttribute('src'%2Cl.protocol%2B'%2F%2F'%2Bhost%2B'%2Fexplaain.js')%3Bb.appendChild(z)%7Dcatch(e)%7Balert('Please wait until the page has loaded.')%3B%7D%7Dinject()%3Bvoid(0)%7D)()%3B">Use Explaain</a>
+      <p>
+        Simply drag this button into your bookmarks bar, and click it at any time to Explaain-ify the webpage you're viewing!
       </p>
 
       <hr/>
