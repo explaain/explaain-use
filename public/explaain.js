@@ -21,18 +21,6 @@ if (!explaain) {
       appServer = "https://explaain-app.herokuapp.com";
     }
 
-    var baseUrl = "";
-    if (window.location.hostname && window.location.hostname != "localhost") {
-      baseUrl = "http://use.explaain.com/"
-    } else {
-      appServer = "http://localhost:5000";
-    }
-
-    var cssUrl = baseUrl+"iframe/stylesheet.css?v="+version;
-    var jQueryUrl = baseUrl+"iframe/jquery-3.1.0.min.js?v="+version;
-    var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
-    var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
-
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
 
     var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href) + '&controlGroup=' + controlGroup;
