@@ -119,6 +119,7 @@ if (!explaain) {
         e.stopImmediatePropagation();
         explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
         explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+        explaainHref = explaainHref.replace('explaain-app.herokuapp.com','explaain-api.herokuapp.com');
         explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
         showOverlay(explaainHref);
         // Return false to prevent a touch event from also trigging a click
