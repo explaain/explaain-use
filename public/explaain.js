@@ -347,8 +347,30 @@ if (!explaain) {
         }
       };
 
+
       xmlhttp.open("GET", airtableListEndpoint, true);
       xmlhttp.send();
+    }
+
+    //Explaainify bit
+    getRemoteEntites = function(text) {
+      var http = new XMLHttpRequest();
+      var url = "//explaain-api.herokuapp.com/extract";
+      var body
+      var params = {
+        // class:
+      };
+      http.open("POST", url, true);
+
+      //Send the proper header information along with the request
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+      http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+          alert(http.responseText);
+        }
+      }
+      http.send(params);
     }
 
     function insertRemoteLinks(links) {
