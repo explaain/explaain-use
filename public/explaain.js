@@ -375,7 +375,7 @@ if (!explaain) {
 
       http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 201) {
-          element.innerHTML = decodeURIComponent(http.responseText);
+          element.innerHTML = decodeURIComponent(http.responseText).slice(1, -1);
         }
       }
       http.send(params);
