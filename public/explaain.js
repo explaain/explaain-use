@@ -353,21 +353,30 @@ if (!explaain) {
     }
 
     //Explaainify bit
-    getRemoteEntites = function(text) {
+    explaainifyElement = function(elementQuery) {
+      var element = document.querySelector(elementQuery);
+      var html = element.innerHTML;
+      // var whenFinished = function()
+      getRemoteEntites(html, element)
+      // .then(function(newHtml) {
+      //   element.innerHTML = newHtml;
+      // })
+    }
+
+    getRemoteEntites = function(text, element) {
       var http = new XMLHttpRequest();
-      var url = "//explaain-api.herokuapp.com/extract";
-      var body
-      var params = {
-        // class:
-      };
+      var url = "http://localhost:5002/explaainify";
+      // var url = "//explaain-api.herokuapp.com/extract";
+      var params = "html=" + encodeURIComponent(text);
       http.open("POST", url, true);
 
       //Send the proper header information along with the request
       http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
       http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-          alert(http.responseText);
+        if(http.readyState == 4 && http.status == 201) {
+          console.log(http.responseText);
+          element.innerHTML = decodeURIComponent(http.responseText);
         }
       }
       http.send(params);
@@ -443,6 +452,8 @@ if (!explaain) {
     this.checkExplaainLink = checkExplaainLink;
     this.answerQuizQuestion = answerQuizQuestion;
     this.openFromInject = openFromInject;
+    this.getRemoteEntites = getRemoteEntites;
+    this.explaainifyElement = explaainifyElement;
 
 
     return this;
