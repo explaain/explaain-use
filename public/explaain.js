@@ -365,7 +365,7 @@ if (!explaain) {
 
     getRemoteEntites = function(text, element) {
       var http = new XMLHttpRequest();
-      var url = "http://localhost:5002/explaainify";
+      var url = "//explaain-api.herokuapp.com/explaainify";
       // var url = "//explaain-api.herokuapp.com/extract";
       var params = "html=" + encodeURIComponent(text);
       http.open("POST", url, true);
@@ -375,7 +375,6 @@ if (!explaain) {
 
       http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 201) {
-          console.log(http.responseText);
           element.innerHTML = decodeURIComponent(http.responseText);
         }
       }
