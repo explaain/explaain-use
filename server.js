@@ -2,7 +2,7 @@ var express = require('express');
     partials = require('express-partials'),
     app = express();
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 5001));
 
 app.use(express.static(__dirname + '/public'));
 
