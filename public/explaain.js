@@ -17,8 +17,8 @@ if (!explaain) {
     var appServer = "http://app.explaain.com";
 
     if (window.location.protocol == 'https:') {
-      apiServer = "https://explaain-api.herokuapp.com";
-      appServer = "https://explaain-app.herokuapp.com";
+      apiServer = "https://api.explaain.com";
+      appServer = "https://app.explaain.com";
     }
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
