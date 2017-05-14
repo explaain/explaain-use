@@ -22,6 +22,11 @@ if (!explaain) {
       apiServer = "https://api.explaain.com";
       appServer = "https://app.explaain.com";
     }
+    console.log(window.location.hostname);
+    if (window.location.hostname == 'localhost') {
+      // apiServer = "http://localhost:5002";
+      appServer = "http://localhost:5000";
+    }
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
 
@@ -120,7 +125,6 @@ if (!explaain) {
       if (explaainHref) {
         e.preventDefault();
         e.stopImmediatePropagation();
-<<<<<<< HEAD
       }
     }
     function startMoving(e) {
@@ -146,15 +150,6 @@ if (!explaain) {
       var target = unHighlight(e);
       if (Dragging) {
         Dragging = false;
-=======
-        explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
-        explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
-        explaainHref = explaainHref.replace('explaain-app.herokuapp.com','explaain-api.herokuapp.com');
-        explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
-        showOverlay(explaainHref);
-        // Return false to prevent a touch event from also trigging a click
-        return false;
->>>>>>> origin/develop
       } else {
         var explaainHref = checkExplaainLink(target);
         if (explaainHref) {
@@ -162,6 +157,7 @@ if (!explaain) {
           e.stopImmediatePropagation();
           explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
           explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+          explaainHref = explaainHref.replace('explaain-app.herokuapp.com','explaain-api.herokuapp.com');
           explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
           showOverlay(explaainHref);
           // Return false to prevent a touch event from also trigging a click
@@ -355,13 +351,9 @@ if (!explaain) {
 
     // Jeremy's additions
     function addExplaainStyles() {
-<<<<<<< HEAD
-      var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; }';
-      myExplaainStyles = myExplaainStyles + 'a.explaain-link.highlighted { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; }';
-=======
       var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; box-shadow: none !important; }';
-      myExplaainStyles = myExplaainStyles + ' a.explaain-link:hover { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; box-shadow: none !important; }';
->>>>>>> origin/develop
+      myExplaainStyles = myExplaainStyles + ' a.explaain-link.highlighted { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; box-shadow: none !important; }';
+
       var myExplaainStyleTag = document.createElement('style');
       myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
       myExplaainStyleTag.innerHTML = myExplaainStyles;
