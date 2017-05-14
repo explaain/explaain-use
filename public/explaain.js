@@ -22,7 +22,6 @@ if (!explaain) {
       apiServer = "https://api.explaain.com";
       appServer = "https://app.explaain.com";
     }
-    console.log(window.location.hostname);
     if (window.location.hostname == 'localhost') {
       // apiServer = "http://localhost:5002";
       appServer = "http://localhost:5000";
@@ -50,9 +49,6 @@ if (!explaain) {
       if (!controlGroup) {
         // linkExplaainKeywords();
         addExplaainStyles();
-        styleExplaainLinks();
-
-        getRemoteLinks();
 
         var elements = document.getElementsByClassName("explaain");
         for (var i=0; i < elements.length; i++) {
@@ -71,6 +67,7 @@ if (!explaain) {
             // Assume <p> tags, insert links to cards
           }
         }
+
       }
 
       // Add overlay iframe
@@ -94,6 +91,12 @@ if (!explaain) {
       iframe.style.background = "rgba(0,0,0,0.5)";
       iframe.style.transition = "opacity 0.5s";
       document.body.appendChild(iframe);
+
+
+      if (!controlGroup) {
+        prepareExplaainLinks();
+        getRemoteLinks();
+      }
     });
 
     if (!controlGroup) {
@@ -230,6 +233,16 @@ if (!explaain) {
       document.getElementById(iframeId).style.width  = '100%';
     }
 
+    function importCards(urls) {
+      if (window.frames['explaain-overlay'].postMessage) {
+        // e.g. Safari
+        window.frames['explaain-overlay'].postMessage({ action: 'import', urls: urls }, "*");
+      } else if (window.frames['explaain-overlay'].contentWindow.postMessage) {
+        // e.g. Chrome, Firefox
+        window.frames['explaain-overlay'].contentWindow.postMessage({ action: 'import', urls: urls }, "*");
+      }
+    }
+
     function showOverlay(cardId) {
 
       if (window.frames['explaain-overlay'].postMessage) {
@@ -358,14 +371,23 @@ if (!explaain) {
       myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
       myExplaainStyleTag.innerHTML = myExplaainStyles;
     }
-    function styleExplaainLinks() {
+
+    function prepareExplaainLinks() {
       //Adds explaain-link class to all explaain links on the page
       var pageLinks = Array.prototype.slice.call(document.getElementsByTagName('a'));
-      for (var i in pageLinks) {
-        if (checkExplaainLink(pageLinks[i])) {
-          pageLinks[i].className += " explaain-link";
-        }
-      }
+      var explaainLinks = pageLinks.filter(function(link) {
+        return checkExplaainLink(link);
+      })
+      explaainLinks.forEach(function(link) {
+        link.className += " explaain-link";
+      })
+      //Gets app.explaain.com to import all the cards ready for instant access
+      explaainLinkUrls = explaainLinks.map(function(link) {
+        return link.href;
+      })
+      setTimeout(function() {
+        importCards(explaainLinkUrls);
+      },3000)
     }
 
     function getRemoteLinks() {
@@ -428,7 +450,7 @@ if (!explaain) {
         var cardURL = links[i].fields.Card;
         element.innerHTML = element.innerHTML.replace(text, '<a href="' + cardURL + '">' + text + '</a>');
       }
-      styleExplaainLinks();
+      prepareExplaainLinks();
     }
 
     function linkExplaainKeywords() {
