@@ -485,6 +485,21 @@ if (!explaain) {
       return target.replace(new RegExp(search, 'g'), replacement);
     };
 
+    function addClientCards(cards) {
+      if (!Array.isArray(cards)) {
+        cards = [cards];
+      }
+      cards.forEach(function(card) {
+        var key = card['@id'] || card.key;
+        card['@id'] = key;
+        clientCards[key] = card;
+      });
+    }
+
+    function getClientCards() {
+      return clientCards;
+    }
+
 
 
     function getParameterByName(name, url) {
@@ -533,7 +548,8 @@ if (!explaain) {
     this.openFromInject = openFromInject;
     this.getRemoteEntites = getRemoteEntites;
     this.explaainifyElement = explaainifyElement;
-    this.clientCards = clientCards;
+    this.addClientCards = addClientCards;
+    this.getClientCards = getClientCards;
 
 
     return this;
