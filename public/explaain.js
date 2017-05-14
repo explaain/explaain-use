@@ -13,25 +13,15 @@ if (!explaain) {
     // (as there is no build/deploy step yet)
     var version = "1.3.0";
 
+    var Dragging = false;
+
     var apiServer = "http://api.explaain.com";
     var appServer = "http://app.explaain.com";
 
     if (window.location.protocol == 'https:') {
-      apiServer = "https://explaain-api.herokuapp.com";
-      appServer = "https://explaain-app.herokuapp.com";
+      apiServer = "https://api.explaain.com";
+      appServer = "https://app.explaain.com";
     }
-
-    var baseUrl = "";
-    if (window.location.hostname && window.location.hostname != "localhost") {
-      baseUrl = "http://use.explaain.com/"
-    } else {
-      appServer = "http://localhost:5000";
-    }
-
-    var cssUrl = baseUrl+"iframe/stylesheet.css?v="+version;
-    var jQueryUrl = baseUrl+"iframe/jquery-3.1.0.min.js?v="+version;
-    var markdownParserUrl = baseUrl+"iframe/marked.min.js?v="+version;
-    var iframeJsUrl = baseUrl+"iframe/javascript.js?v="+version;
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
 
@@ -106,12 +96,17 @@ if (!explaain) {
       * Intercept clicks and check if they are to explaain cards
       */
       if (document.addEventListener) {
+        // document.addEventListener('mousedown', highlightEvent, {passive: false, capture: true});
         document.addEventListener('click', clickEvent, {passive: false, capture: true});
-        document.addEventListener('touchstart', clickEvent, {passive: false, capture: true});
-        // document.addEventListener('mouseup', clickEvent, {passive: false, capture: true});
+        document.addEventListener('touchstart', highlightEvent, {passive: false, capture: true});
+        document.addEventListener('touchmove', startMoving, {passive: false, capture: true});
+        document.addEventListener('touchend', clickEvent, {passive: false, capture: true});
+        document.addEventListener('mouseover', highlightEvent, {passive: false, capture: true});
+        document.addEventListener('mouseout', unHighlightEvent, {passive: false, capture: true});
+        // document.addEventListener('mouseup', stopProp, {passive: false, capture: true});
       } else if (document.attachEvent) {
         document.attachEvent('onclick', clickEvent);
-        // document.attachEvent('mouseup', stopProp);
+        document.attachEvent('mouseup', stopProp); // Unsure about this
       }
     }
 
@@ -120,24 +115,61 @@ if (!explaain) {
     };
 
     function stopProp(e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-    function clickEvent(e) {
       var target = e.target || e.srcElement;
       var explaainHref = checkExplaainLink(target);
       if (explaainHref) {
         e.preventDefault();
         e.stopImmediatePropagation();
+<<<<<<< HEAD
+      }
+    }
+    function startMoving(e) {
+      Dragging = true;
+    }
+    function highlightEvent(e) {
+      var target = e.target || e.srcElement;
+      var explaainHref = checkExplaainLink(target);
+      if (explaainHref) {
+        target.className += " highlighted";
+      }
+    }
+    function unHighlightEvent(e) {
+      unHighlight(e);
+      Dragging = false;
+    }
+    function unHighlight(e) {
+      var target = e.target || e.srcElement;
+      target.className = target.className.replace(/\bhighlighted\b/,'');
+      return target;
+    }
+    function clickEvent(e) {
+      var target = unHighlight(e);
+      if (Dragging) {
+        Dragging = false;
+=======
         explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
         explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+        explaainHref = explaainHref.replace('explaain-app.herokuapp.com','explaain-api.herokuapp.com');
         explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
         showOverlay(explaainHref);
         // Return false to prevent a touch event from also trigging a click
         return false;
+>>>>>>> origin/develop
       } else {
-        if (overlayShowing) {
-          hideOverlay();
+        var explaainHref = checkExplaainLink(target);
+        if (explaainHref) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          explaainHref = explaainHref.replace('app.explaain.com','api.explaain.com');
+          explaainHref = explaainHref.replace('app.dev.explaain.com','api.dev.explaain.com');
+          explaainHref = explaainHref.replace('localhost:5000','api.explaain.com');
+          showOverlay(explaainHref);
+          // Return false to prevent a touch event from also trigging a click
+          return false;
+        } else {
+          if (overlayShowing) {
+            hideOverlay();
+          }
         }
       }
     }
@@ -145,7 +177,7 @@ if (!explaain) {
     function checkExplaainLink(target) {
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
-        var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', apiServer + '\/.+', appServer + '\/.+']
+        var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
         if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
           return href;
         } else {
@@ -323,8 +355,13 @@ if (!explaain) {
 
     // Jeremy's additions
     function addExplaainStyles() {
+<<<<<<< HEAD
       var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; }';
-      myExplaainStyles = myExplaainStyles + ' a.explaain-link:hover { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; }';
+      myExplaainStyles = myExplaainStyles + 'a.explaain-link.highlighted { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; }';
+=======
+      var myExplaainStyles = 'a.explaain-link { padding: 0 3px !important; background: #ebebeb !important; border: 1px solid #ebebeb !important; text-decoration: none !important; color: #333 !important; box-shadow: none !important; }';
+      myExplaainStyles = myExplaainStyles + ' a.explaain-link:hover { color: white !important; background: #ff6e73 !important; border: 1px solid #ff6e73 !important; box-shadow: none !important; }';
+>>>>>>> origin/develop
       var myExplaainStyleTag = document.createElement('style');
       myExplaainStyleTag = document.getElementsByTagName('head')[0].appendChild(myExplaainStyleTag);
       myExplaainStyleTag.innerHTML = myExplaainStyles;
@@ -358,8 +395,38 @@ if (!explaain) {
         }
       };
 
+
       xmlhttp.open("GET", airtableListEndpoint, true);
       xmlhttp.send();
+    }
+
+    //Explaainify bit
+    explaainifyElement = function(elementQuery) {
+      var element = document.querySelector(elementQuery);
+      var html = element.innerHTML;
+      // var whenFinished = function()
+      getRemoteEntites(html, element)
+      // .then(function(newHtml) {
+      //   element.innerHTML = newHtml;
+      // })
+    }
+
+    getRemoteEntites = function(text, element) {
+      var http = new XMLHttpRequest();
+      var url = "//explaain-api.herokuapp.com/explaainify";
+      // var url = "//explaain-api.herokuapp.com/extract";
+      var params = "html=" + encodeURIComponent(text);
+      http.open("POST", url, true);
+
+      //Send the proper header information along with the request
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+      http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 201) {
+          element.innerHTML = decodeURIComponent(http.responseText).slice(1, -1);
+        }
+      }
+      http.send(params);
     }
 
     function insertRemoteLinks(links) {
@@ -432,6 +499,8 @@ if (!explaain) {
     this.checkExplaainLink = checkExplaainLink;
     this.answerQuizQuestion = answerQuizQuestion;
     this.openFromInject = openFromInject;
+    this.getRemoteEntites = getRemoteEntites;
+    this.explaainifyElement = explaainifyElement;
 
 
     return this;
