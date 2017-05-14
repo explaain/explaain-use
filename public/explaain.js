@@ -32,6 +32,10 @@ if (!explaain) {
     var overlayUrl = appServer+'/?embed=true&embedType=overlay&frameId=explaain-overlay&frameParent='+encodeURIComponent(window.location.href) + '&controlGroup=' + controlGroup;
     var overlayShowing = false;
 
+    var clientCards = {
+      "http://api.explaain.com/Detail/abc": {name: "Boris Johnson", description: "UK Foreign Secretary", "@id": "http://api.explaain.com/Detail/abc", "@type": "Detail"}
+    };
+
 
     function getOverlayShowing() {
       return overlayShowing;
@@ -234,28 +238,42 @@ if (!explaain) {
     }
 
     function importCards(urls) {
+      var message = {
+        action: 'import',
+        urls: urls
+      };
+
       if (window.frames['explaain-overlay'].postMessage) {
         // e.g. Safari
-        window.frames['explaain-overlay'].postMessage({ action: 'import', urls: urls }, "*");
+        window.frames['explaain-overlay'].postMessage(message, "*");
       } else if (window.frames['explaain-overlay'].contentWindow.postMessage) {
         // e.g. Chrome, Firefox
-        window.frames['explaain-overlay'].contentWindow.postMessage({ action: 'import', urls: urls }, "*");
+        window.frames['explaain-overlay'].contentWindow.postMessage(message, "*");
       }
     }
 
-    function showOverlay(cardId) {
+    function showOverlay(key) {
+
+      var message = {
+        action: 'open',
+        key: key
+      };
+
+      if (clientCards[key]) {
+        message.cardData = clientCards[key];
+      }
 
       if (window.frames['explaain-overlay'].postMessage) {
         // e.g. Safari
-        window.frames['explaain-overlay'].postMessage({ action: 'open', key: cardId }, "*");
+        window.frames['explaain-overlay'].postMessage(message, "*");
       } else if (window.frames['explaain-overlay'].contentWindow.postMessage) {
         // e.g. Chrome, Firefox
-        window.frames['explaain-overlay'].contentWindow.postMessage({ action: 'open', key: cardId }, "*");
+        window.frames['explaain-overlay'].contentWindow.postMessage(message, "*");
       }
 
-      // @TODO if cardId passed, pass message to iframe to load card
+      // @TODO if key passed, pass message to iframe to load card
       // if (overlayUrl)
-      //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(cardId);
+      //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(key);
       document.getElementById("explaain-overlay").style.opacity = "1";
       document.getElementById("explaain-overlay").style.pointerEvents = "all";
       // document.getElementById("explaain-overlay").style.visibility = "visible";
@@ -515,6 +533,7 @@ if (!explaain) {
     this.openFromInject = openFromInject;
     this.getRemoteEntites = getRemoteEntites;
     this.explaainifyElement = explaainifyElement;
+    this.clientCards = clientCards;
 
 
     return this;
