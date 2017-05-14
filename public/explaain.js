@@ -20,6 +20,11 @@ if (!explaain) {
       apiServer = "https://api.explaain.com";
       appServer = "https://app.explaain.com";
     }
+    console.log(window.location.hostname);
+    if (window.location.hostname == 'localhost') {
+      // apiServer = "http://localhost:5002";
+      appServer = "http://localhost:5000";
+    }
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
 
