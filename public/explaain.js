@@ -150,7 +150,9 @@ if (!explaain) {
     }
     function unHighlight(e) {
       var target = e.target || e.srcElement;
-      target.className = target.className.replace(/\bhighlighted\b/,'');
+      console.log('target');
+      console.log(target);
+      target.className = target.className ? target.className.replace(/\bhighlighted\b/,'') : null;
       return target;
     }
     function clickEvent(e) {
