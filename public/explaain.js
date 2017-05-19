@@ -77,26 +77,34 @@ if (!explaain) {
       }
 
       // Add overlay iframe
+      var wrapper = document.createElement('div');
+      wrapper.id = "explaain-wrapper";
+      wrapper.style.position = "fixed";
+      wrapper.style.overflow = "auto";
+      wrapper.style.zIndex = "100000000000000";
+      wrapper.style.top = "0";
+      wrapper.style.left = "0";
+      wrapper.style.width = "100%";
+      wrapper.style.height = "100%";
+      wrapper.style.opacity = "0";
+      wrapper.style.pointerEvents = "none";
+      wrapper.style.transition = "opacity 0.5s";
+      wrapper.style["-webkit-overflow-scrolling"] = "touch";
+      wrapper.style.background = "rgba(0,0,0,0.5)";
       var iframe = document.createElement('iframe');
       iframe.id = "explaain-overlay";
       iframe.src = overlayUrl;
-      // iframe.scrolling = "no";
       iframe.frameBorder = "0";
-      iframe.style.position = "fixed";
-      iframe.style.overflow = "scroll";
-      iframe.style.zIndex = "100000000000000";
+      iframe.style.position = "relative";
+      iframe.style.overflow = "auto";
       iframe.style.border = "none";
-      iframe.style.top = "0";
-      iframe.style.left = "0";
       iframe.style.width = "100%";
       iframe.style.height = "100%";
       iframe.style.margin = "0";
-      iframe.style.opacity = "0";
       iframe.style.pointerEvents = "none";
-      // iframe.style.visibility = "hidden";
-      iframe.style.background = "rgba(0,0,0,0.5)";
-      iframe.style.transition = "opacity 0.5s";
-      document.body.appendChild(iframe);
+      iframe.style.display = "block";
+      wrapper.appendChild(iframe);
+      document.body.appendChild(wrapper);
 
 
       if (!controlGroup) {
@@ -278,7 +286,8 @@ if (!explaain) {
       // @TODO if key passed, pass message to iframe to load card
       // if (overlayUrl)
       //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(key);
-      document.getElementById("explaain-overlay").style.opacity = "1";
+      document.getElementById("explaain-wrapper").style.opacity = "1";
+      document.getElementById("explaain-wrapper").style.pointerEvents = "all";
       document.getElementById("explaain-overlay").style.pointerEvents = "all";
       // document.getElementById("explaain-overlay").style.visibility = "visible";
 
@@ -286,6 +295,7 @@ if (!explaain) {
       stylesStorage.body.scrollTop = document.getElementsByTagName("body")[0].scrollTop;
       stylesStorage.html = JSON.parse(JSON.stringify(document.getElementsByTagName("html")[0].style));
       if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
+        setTimeout(function(){document.getElementById("explaain-wrapper").style.top = "0 !important";},100); // this is a hack for iOS
         document.getElementsByTagName("body")[0].style.overflow = "hidden";
         document.getElementsByTagName("html")[0].style.overflow = "hidden";
         document.getElementsByTagName("body")[0].style.position = "fixed";
@@ -305,7 +315,8 @@ if (!explaain) {
     // Note: As we cannot detect clicks inside an iframe, this must be called
     // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
     function hideOverlay() {
-      document.getElementById("explaain-overlay").style.opacity = "0";
+      document.getElementById("explaain-wrapper").style.opacity = "0";
+      document.getElementById("explaain-wrapper").style.pointerEvents = "none";
       document.getElementById("explaain-overlay").style.pointerEvents = "none";
       // document.getElementById("explaain-overlay").style.visibility = "hidden";
 
