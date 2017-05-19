@@ -36,6 +36,8 @@ if (!explaain) {
       "http://api.explaain.com/Detail/abc": {name: "Boris Johnson", description: "UK Foreign Secretary", "@id": "http://api.explaain.com/Detail/abc", "@type": "Detail"}
     };
 
+    var stylesStorage = {};
+
 
     function getOverlayShowing() {
       return overlayShowing;
@@ -280,7 +282,23 @@ if (!explaain) {
       document.getElementById("explaain-overlay").style.pointerEvents = "all";
       // document.getElementById("explaain-overlay").style.visibility = "visible";
 
-      document.getElementsByTagName("body")[0].style.overflow = "hidden";
+      stylesStorage.body = JSON.parse(JSON.stringify(document.getElementsByTagName("body")[0].style));
+      stylesStorage.body.scrollTop = document.getElementsByTagName("body")[0].scrollTop;
+      stylesStorage.html = JSON.parse(JSON.stringify(document.getElementsByTagName("html")[0].style));
+      if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
+        document.getElementsByTagName("body")[0].style.overflow = "hidden";
+        document.getElementsByTagName("html")[0].style.overflow = "hidden";
+        document.getElementsByTagName("body")[0].style.position = "fixed";
+        document.getElementsByTagName("html")[0].style.position = "fixed";
+        document.getElementsByTagName("body")[0].style.height = "100%";
+        document.getElementsByTagName("html")[0].style.height = "100%";
+        document.getElementsByTagName("body")[0].style.width = "100%";
+        document.getElementsByTagName("html")[0].style.width = "100%";
+        document.getElementsByTagName("body")[0].scrollTop = stylesStorage.body.scrollTop;
+      } else {
+        document.getElementsByTagName("html")[0].style.overflow = "hidden";
+      }
+
       overlayShowing = true;
     };
 
@@ -291,7 +309,20 @@ if (!explaain) {
       document.getElementById("explaain-overlay").style.pointerEvents = "none";
       // document.getElementById("explaain-overlay").style.visibility = "hidden";
 
-      document.getElementsByTagName("body")[0].style.overflow = "scroll";
+      //document.getElementsByTagName("body")[0].style.overflow = "scroll";
+      if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
+        document.getElementsByTagName("body")[0].style.overflow = stylesStorage.body.overflow;
+        document.getElementsByTagName("html")[0].style.overflow = stylesStorage.html.overflow;
+        document.getElementsByTagName("body")[0].style.position = stylesStorage.body.position;
+        document.getElementsByTagName("html")[0].style.position = stylesStorage.html.position;
+        document.getElementsByTagName("body")[0].style.height = stylesStorage.body.height;
+        document.getElementsByTagName("html")[0].style.height = stylesStorage.html.height;
+        document.getElementsByTagName("body")[0].style.width = stylesStorage.body.width;
+        document.getElementsByTagName("html")[0].style.width = stylesStorage.html.height;
+        document.getElementsByTagName("body")[0].scrollTop = stylesStorage.body.scrollTop;
+      } else {
+        document.getElementsByTagName("html")[0].style.overflow = stylesStorage.html.overflow;
+      }
       overlayShowing = false;
     }
 
