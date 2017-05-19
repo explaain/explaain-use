@@ -296,7 +296,7 @@ if (!explaain) {
         document.getElementsByTagName("html")[0].style.width = "100%";
         document.getElementsByTagName("body")[0].scrollTop = stylesStorage.body.scrollTop;
       } else {
-        document.getElementsByTagName("html")[0].style.overflow = "hidden";
+        document.getElementsByTagName("body")[0].style.overflow = "hidden";
       }
 
       overlayShowing = true;
@@ -321,7 +321,7 @@ if (!explaain) {
         document.getElementsByTagName("html")[0].style.width = stylesStorage.html.height;
         document.getElementsByTagName("body")[0].scrollTop = stylesStorage.body.scrollTop;
       } else {
-        document.getElementsByTagName("html")[0].style.overflow = stylesStorage.html.overflow;
+        document.getElementsByTagName("body")[0].style.overflow = stylesStorage.body.overflow;
       }
       overlayShowing = false;
     }
