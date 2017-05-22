@@ -160,8 +160,6 @@ if (!explaain) {
     }
     function unHighlight(e) {
       var target = e.target || e.srcElement;
-      console.log('target');
-      console.log(target);
       target.className = target.className ? target.className.replace(/\bhighlighted\b/,'') : null;
       return target;
     }
