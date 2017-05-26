@@ -160,7 +160,7 @@ if (!explaain) {
     }
     function unHighlight(e) {
       var target = e.target || e.srcElement;
-      target.className = target.className ? target.className.replace(/\bhighlighted\b/,'') : null;
+      target.className = typeof target.className == 'string' ? target.className.replace(/\bhighlighted\b/,'') : null;
       return target;
     }
     function clickEvent(e) {
