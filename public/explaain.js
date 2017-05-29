@@ -318,7 +318,7 @@ if (!explaain) {
       document.getElementById("explaain-overlay").style.pointerEvents = "none";
       // document.getElementById("explaain-overlay").style.visibility = "hidden";
 
-      //document.getElementsByTagName("body")[0].style.overflow = "scroll";
+      document.getElementsByTagName("body")[0].style.overflow = "scroll";
       if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
         document.getElementsByTagName("body")[0].style.overflow = stylesStorage.body.overflow;
         document.getElementsByTagName("html")[0].style.overflow = stylesStorage.html.overflow;
