@@ -272,6 +272,7 @@ if (!explaain) {
       if (clientCards[key]) {
         message.cardData = clientCards[key];
       }
+      message.cardsData = clientCards;
 
       if (window.frames['explaain-overlay'].postMessage) {
         // e.g. Safari
