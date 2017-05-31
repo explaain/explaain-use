@@ -85,7 +85,7 @@ if (!explaain) {
       wrapper.style.top = "0";
       wrapper.style.left = "0";
       wrapper.style.width = "100%";
-      wrapper.style.height = "100%";
+      wrapper.style.height = "0%";
       wrapper.style.opacity = "0";
       wrapper.style.pointerEvents = "none";
       wrapper.style.transition = "opacity 0.5s";
@@ -286,6 +286,7 @@ if (!explaain) {
       // if (overlayUrl)
       //   document.getElementById("explaain-overlay").src = overlayUrl+"?card="+encodeURIComponent(key);
       document.getElementById("explaain-wrapper").style.opacity = "1";
+      document.getElementById("explaain-wrapper").style.height = "100%";
       document.getElementById("explaain-wrapper").style.pointerEvents = "all";
       document.getElementById("explaain-overlay").style.pointerEvents = "all";
       // document.getElementById("explaain-overlay").style.visibility = "visible";
@@ -315,6 +316,9 @@ if (!explaain) {
     // from INSIDE the iframe as 'window.parent.explaain.hideOverlay()'
     function hideOverlay() {
       document.getElementById("explaain-wrapper").style.opacity = "0";
+      setTimeout(function() { //This waits until the animations have finished
+        document.getElementById("explaain-wrapper").style.height = "0%";
+      }, 500)
       document.getElementById("explaain-wrapper").style.pointerEvents = "none";
       document.getElementById("explaain-overlay").style.pointerEvents = "none";
       // document.getElementById("explaain-overlay").style.visibility = "hidden";
