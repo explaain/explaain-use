@@ -317,7 +317,9 @@ if (!explaain) {
     function hideOverlay() {
       document.getElementById("explaain-wrapper").style.opacity = "0";
       setTimeout(function() { //This waits until the animations have finished
-        document.getElementById("explaain-wrapper").style.height = "0%";
+        if (overlayShowing==false) {
+          document.getElementById("explaain-wrapper").style.height = "0%";
+        }
       }, 500)
       document.getElementById("explaain-wrapper").style.pointerEvents = "none";
       document.getElementById("explaain-overlay").style.pointerEvents = "none";
