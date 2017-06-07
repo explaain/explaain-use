@@ -477,8 +477,8 @@ if (!explaain) {
       };
 
 
-      xmlhttp.open("GET", airtableListEndpoint, true);
-      xmlhttp.send();
+      // xmlhttp.open("GET", airtableListEndpoint, true);
+      // xmlhttp.send();
     }
 
     //Explaainify bit
