@@ -15,16 +15,16 @@ if (!explaain) {
 
     var Dragging = false;
 
-    var apiServer = "http://api.explaain.com";
-    var appServer = "http://app.explaain.com";
+    var apiServer = "//api.explaain.com";
+    var appServer = "//app.explaain.com";
 
-    if (window.location.protocol == 'https:') {
-      apiServer = "https://api.explaain.com";
-      appServer = "https://app.explaain.com";
-    }
+    // if (window.location.protocol == 'https:') {
+    //   apiServer = "https://api.explaain.com";
+    //   appServer = "https://app.explaain.com";
+    // }
     if (window.location.hostname == 'localhost') {
       // apiServer = "http://localhost:5002";
-      appServer = "http://localhost:5000";
+      // appServer = "http://localhost:5000";
     }
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
@@ -33,7 +33,7 @@ if (!explaain) {
     var overlayShowing = false;
 
     var clientCards = {
-      "http://api.explaain.com/Detail/abc": {name: "Boris Johnson", description: "UK Foreign Secretary", "@id": "http://api.explaain.com/Detail/abc", "@type": "Detail"}
+      "//api.explaain.com/Detail/abc": {name: "Boris Johnson", description: "UK Foreign Secretary", "@id": "//api.explaain.com/Detail/abc", "@type": "Detail"}
     };
 
     var stylesStorage = {};
