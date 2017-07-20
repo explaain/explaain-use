@@ -18,6 +18,8 @@ if (!explaain) {
     var apiServer = "//api.explaain.com";
     var appServer = "//app.explaain.com";
 
+    var Params = {};
+
     // if (window.location.protocol == 'https:') {
     //   apiServer = "https://api.explaain.com";
     //   appServer = "https://app.explaain.com";
@@ -484,12 +486,15 @@ if (!explaain) {
     //Explaainify bit
     explaainifyElement = function(elementQuery) {
       var element = document.querySelector(elementQuery);
-      var html = element.innerHTML;
-      // var whenFinished = function()
-      getRemoteEntites(html, element)
-      // .then(function(newHtml) {
-      //   element.innerHTML = newHtml;
-      // })
+      if (element) {
+        console.log('Explaainify-ing!');
+        var html = element.innerHTML;
+        // var whenFinished = function()
+        getRemoteEntites(html, element)
+        // .then(function(newHtml) {
+        //   element.innerHTML = newHtml;
+        // })
+      }
     }
 
     getRemoteEntites = function(text, element) {
@@ -587,6 +592,37 @@ if (!explaain) {
       showOverlay(key);
     }
 
+    function getParams() {
+      return Params;
+    }
+
+    function setParams(params, update) {
+      const keys = Object.keys(params);
+      keys.forEach(function(key) {
+        Params[key] = params[key];
+      })
+      if(update) updateWithNewParams()
+    }
+
+    function updateWithNewParams() {
+      const params = getParams();
+      if (params.explaainify) {
+        selectMainElements();
+      }
+    }
+
+    function selectMainElements() {
+      const mainSelectors = [
+        '.story-body', //BBC News
+        '.content__main-column', //The Guardian
+        '.main-content-column', //The Independent
+        '.article-body-text', //The Telegraph
+      ]
+      mainSelectors.forEach(function(selector) {
+        explaainifyElement(selector);
+      })
+    }
+
 
     this.getOverlayShowing = getOverlayShowing;
     this.showOverlay = showOverlay;
@@ -599,6 +635,8 @@ if (!explaain) {
     this.explaainifyElement = explaainifyElement;
     this.addClientCards = addClientCards;
     this.getClientCards = getClientCards;
+    this.getParams = getParams;
+    this.setParams = setParams;
 
 
     return this;
