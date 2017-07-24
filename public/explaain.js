@@ -140,7 +140,7 @@ if (!explaain) {
 
     function stopProp(e) {
       var target = e.target || e.srcElement;
-      var explaainHref = checkExplaainLink(target);
+      var explaainHref = checkExplaainLink(target, true);
       if (explaainHref) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -151,7 +151,7 @@ if (!explaain) {
     }
     function highlightEvent(e) {
       var target = e.target || e.srcElement;
-      var explaainHref = checkExplaainLink(target);
+      var explaainHref = checkExplaainLink(target, true);
       if (explaainHref) {
         target.className += " highlighted";
       }
@@ -170,7 +170,7 @@ if (!explaain) {
       if (Dragging) {
         Dragging = false;
       } else {
-        var explaainHref = checkExplaainLink(target);
+        var explaainHref = checkExplaainLink(target, true);
         if (explaainHref) {
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -189,14 +189,18 @@ if (!explaain) {
       }
     }
 
-    function checkExplaainLink(target) {
+    function checkExplaainLink(target, allowExistingClasses) {
       if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
-        var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
-        if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
+        if (allowExistingClasses && (hasClass(target, 'explaain-link') || hasClass(target.parentNode, 'explaain-link'))) {
           return href;
         } else {
-          return false
+          var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
+          if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
+            return href;
+          } else {
+            return false
+          }
         }
       } else {
         return false
@@ -445,7 +449,7 @@ if (!explaain) {
       //Adds explaain-link class to all explaain links on the page
       var pageLinks = Array.prototype.slice.call(document.getElementsByTagName('a'));
       var explaainLinks = pageLinks.filter(function(link) {
-        return checkExplaainLink(link);
+        return checkExplaainLink(link, true);
       })
       explaainLinks.forEach(function(link) {
         link.className += " explaain-link";
@@ -484,32 +488,45 @@ if (!explaain) {
     }
 
     //Explaainify bit
-    explaainifyElement = function(elementQuery) {
+    explaainifyElement = function(elementQuery, frontendReplacing) {
       var element = document.querySelector(elementQuery);
       if (element) {
         console.log('Explaainify-ing!');
         var html = element.innerHTML;
         // var whenFinished = function()
-        getRemoteEntites(html, element)
+        getRemoteEntities(html, element, frontendReplacing)
         // .then(function(newHtml) {
         //   element.innerHTML = newHtml;
         // })
       }
     }
 
-    getRemoteEntites = function(text, element) {
+    getRemoteEntities = function(text, element, frontendReplacing) {
       var http = new XMLHttpRequest();
       var url = "//explaain-api.herokuapp.com/explaainify";
-      // var url = "//explaain-api.herokuapp.com/extract";
       var params = "html=" + encodeURIComponent(text);
       http.open("POST", url, true);
 
       //Send the proper header information along with the request
       http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http.responseType = 'json';
 
       http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 201) {
-          element.innerHTML = decodeURIComponent(http.responseText).slice(1, -1);
+          console.log(http.response);
+          if (frontendReplacing) {
+            const entities = http.response.cards.map(function(card) {
+              return {
+                key: card.objectID,
+                phrases: [
+                  card.name // This should be a list of phrases sent by the API
+                ]
+              };
+            })
+            applyEntities(entities)
+          } else {
+            element.innerHTML = decodeURIComponent(http.response.text).slice(1, -1);
+          }
         }
       }
       http.send(params);
@@ -619,8 +636,123 @@ if (!explaain) {
         '.article-body-text', //The Telegraph
       ]
       mainSelectors.forEach(function(selector) {
-        explaainifyElement(selector);
+        explaainifyElement(selector, true);
       })
+    }
+
+
+    /**
+     * Converts found entities in paragraphs into Explaain links
+     * This function guarantees not breaking the website
+     * since it works with text nodes only
+     *
+     * This is ES5 function
+     *
+     * @TODO Now works only for first level text nodes.
+     * Make it recursive for better coverage.
+     *
+     * @param {Object} rawEntities [{ key: 'key', phrases: ['phrase1', 'phraseN'] }]
+     */
+    function applyEntities (rawEntities) {
+      console.log(rawEntities);
+      var entities = flattenEntities(rawEntities);
+      console.log(entities);
+      // Selecting only paragraphs
+      // @TODO this might be improved later, especially when the function is recursive
+      var paragraphs = document.querySelectorAll('p');
+
+      // Iterate through entities
+      entities.forEach(function (entity) {
+        // Escape entity phrase to safely use in regular expressions
+        var phrase = entity.phrase.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
+        // Iterate through paragraphs
+        paragraphs.forEach(function (paragraph) {
+          var childNodes = Array.prototype.slice.call(paragraph.childNodes);
+
+          /*
+           * Paragraph might contain not only text, but other HTML nodes.
+           * Moreover, when text is replaced with a link, it will produce
+           * an A node, so we need to iterate through child nodes of the
+           * paragrahp each time and process only text nodes
+           */
+          childNodes.forEach(function (childNode) {
+            // process only if is a text node, ignore other HTML nodes
+            if (childNode.nodeType === 3) {
+              var text = childNode.textContent;
+
+              // Ignore letters and digits as delimiters
+              var regExpDelimiter = 'a-z0-9';
+              // Build regular expression for detecting phrases with delimiters
+              var phraseRegExp = new RegExp(
+                '(^|[^' +
+                regExpDelimiter +
+                '])(' +
+                phrase +
+                ')([^' +
+                regExpDelimiter +
+                ']|$)',
+              'i');
+
+              if (text.match(phraseRegExp)) {
+                // We split text into pieces to process
+                var pieces = text.split(phraseRegExp);
+
+                // This regular expresion will detect if a piece is an entity
+                var pieceRegExp = new RegExp('^' + phrase + '$', 'i');
+
+                // Iterate through pieces
+                pieces.forEach(function (piece) {
+                  var newNode;
+
+                  if (piece.match(pieceRegExp)) {
+                    // Create an entity link
+                    newNode = document.createElement('a');
+                    newNode.innerHTML = piece;
+
+                    newNode.setAttribute('href', entity.key);
+                    newNode.className = 'explaain-link';
+                  } else {
+                    // Return text
+                    newNode = document.createTextNode(piece);
+                  }
+
+                  // Inject link into paragraph
+                  paragraph.insertBefore(newNode, childNode);
+                });
+
+                // Remove the original child
+                childNode.remove();
+              }
+            }
+          });
+        });
+      });
+    }
+
+    /**
+     * Flattens entities object and sorts them by phrase character length
+     *
+     * @param {Object} rawEntities [{ key: 'key', phrases: ['phrase1', 'phraseN'] }...]
+     * @return {Object} [{ key: 'key', phrase: 'phrase' }...]
+     */
+    function flattenEntities (rawEntities) {
+      var entities = [];
+
+      rawEntities.forEach(function (entity) {
+        entity.phrases.forEach(function (phrase) {
+          entities.push({
+            key: entity.key,
+            phrase: phrase
+          });
+        });
+      });
+
+      entities.sort(function (a, b) {
+        return a.phrase.length < b.phrase.length;
+      });
+
+      return entities;
     }
 
 
@@ -631,7 +763,7 @@ if (!explaain) {
     this.checkExplaainLink = checkExplaainLink;
     this.answerQuizQuestion = answerQuizQuestion;
     this.openFromInject = openFromInject;
-    this.getRemoteEntites = getRemoteEntites;
+    this.getRemoteEntities = getRemoteEntities;
     this.explaainifyElement = explaainifyElement;
     this.addClientCards = addClientCards;
     this.getClientCards = getClientCards;
@@ -644,7 +776,9 @@ if (!explaain) {
 
 
 
-
+  function hasClass(element, cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+  }
 
 
 
