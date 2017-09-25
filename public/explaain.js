@@ -190,7 +190,7 @@ if (!explaain) {
     }
 
     function checkExplaainLink(target) {
-      if (target.tagName === 'A' || target.parentNode.tagName === 'A') {
+      if (target && target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
         var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
         if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
