@@ -18,6 +18,12 @@ if (!explaain) {
     var apiServer = "//api.explaain.com";
     var appServer = "//app.explaain.com";
 
+    if (getParameterByName('v2', window.location.url) === 'true') {
+      appServer = "//cards.explaain.com"
+      console.log('appServer');
+      console.log(appServer);
+    }
+
     var Params = {};
 
     // if (window.location.protocol == 'https:') {
@@ -27,6 +33,7 @@ if (!explaain) {
     if (window.location.hostname == 'localhost') {
       // apiServer = "http://localhost:5002";
       // appServer = "http://localhost:5000";
+      // appServer = "http://localhost:8080";
     }
 
     var controlGroup = getParameterByName('explaainControlGroup') == "true" || false;
@@ -192,7 +199,7 @@ if (!explaain) {
     function checkExplaainLink(target) {
       if (target && target.tagName === 'A' || target.parentNode.tagName === 'A') {
         var href = target.getAttribute('href') || target.parentNode.getAttribute('href');
-        var acceptableDomains = ['api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
+        var acceptableDomains = ['cards.explaain.com\/.+', 'cards.dev.explaain.com\/.+', 'api.explaain.com\/.+', 'app.explaain.com\/.+', 'api.dev.explaain.com\/.+', 'app.dev.explaain.com\/.+', 'explaain-api.herokuapp.com\/.+', 'explaain-app.herokuapp.com\/.+', apiServer + '\/.+', appServer + '\/.+']
         if (new RegExp(RegExp.escape(acceptableDomains.join("|")).replace(/\\\|/g,'|').replace(/\\\.\\\+/g,'.+')).test(href)) {
           return href;
         } else {
@@ -264,12 +271,15 @@ if (!explaain) {
       }
     }
 
-    function showOverlay(key) {
+    function showOverlay(url) {
+      var key = url // legacy
 
       var message = {
         action: 'open',
-        key: key
-      };
+        key: key,
+        query: getParameterByName('q', url),
+        sameAs: getParameterByName('sameAs', url),
+      }
 
       if (clientCards[key]) {
         message.cardData = clientCards[key];
